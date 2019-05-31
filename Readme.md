@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Vladislav Beliakovskiy](https://up.htmlacademy.ru/javascript/17/user/19362).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Шершнев](https://htmlacademy.ru/profile/id587797).
 
 ---
 
