@@ -20,8 +20,8 @@ var NAMES = ['Антон', 'Сергей', 'Артём', 'Матвей', 'Кир
 
 // Генерирует коммент из одного или двух элементов массива с со общениями.
 var getMessage = function (text) {
-  var pNumber = Math.round(Math.random()); //Количество абзацев. Не вышло округлить "1 или 2", сделано как "0 или 1"
-  var message = randomizeArrayValue(text); //Если рандомизатор выдал 0, то используем 1 элемент массива
+  var pNumber = Math.round(Math.random()); // Количество абзацев. Не вышло округлить "1 или 2", сделано как "0 или 1"
+  var message = randomizeArrayValue(text); // Если рандомизатор выдал 0, то используем 1 элемент массива
   if (pNumber === 1) { // Если выпала 1, то используем 2 элемента массива
     var messageAdditional = randomizeArrayValue(text);
     if (messageAdditional !== message) {
@@ -73,7 +73,7 @@ var renderCards = function () {
     arrCards[i] = card;
   }
   return arrCards;
-}
+};
 var cards = renderCards(); // Массив, принимающий значение функции создания объектов карточек
 
 // Поиск шаблона
@@ -81,7 +81,7 @@ var picture = document.querySelector('#picture')
 .content
 .querySelector('.picture');
 
-var pictureListElement = document.querySelector('.pictures'); //Определяет место вставки блока из шаблона
+var pictureListElement = document.querySelector('.pictures'); // Определяет место вставки блока из шаблона
 
 // Заполняет содержимое карточки
 var renderCard = function (card) {
