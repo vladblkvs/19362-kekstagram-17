@@ -3,10 +3,9 @@
 // Количество карточек с фотками на странице
 var CARD_AMOUNT = 25;
 
-// Рандомизатор массивов
+// Рандомизатор массивов, выдаёт случайный элемент
 var randomizeArrayValue = function (arr) {
-  var randomValue = arr[Math.floor(Math.random() * arr.length)];
-  return randomValue;
+  return arr[Math.floor(Math.random() * arr.length)];
 };
 
 var AVATARS = ['img/avatar-1.svg', 'img/avatar-2.svg', 'img/avatar-3.svg', 'img/avatar-4.svg', 'img/avatar-5.svg', 'img/avatar-6.svg'];
@@ -18,23 +17,33 @@ var MESSAGES = ['Всё отлично!',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 var NAMES = ['Антон', 'Сергей', 'Артём', 'Матвей', 'Кирилл', 'Хуан', 'Отоночё'];
 
-// Генерирует коммент из одного или двух элементов массива с со общениями.
-var getMessage = function (text) {
-  var pNumber = Math.round(Math.random()); // Количество абзацев. Не вышло округлить "1 или 2", сделано как "0 или 1"
-  var message = randomizeArrayValue(text); // Если рандомизатор выдал 0, то используем 1 элемент массива
-  if (pNumber === 1) { // Если выпала 1, то используем 2 элемента массива
-    var messageAdditional = randomizeArrayValue(text);
-    if (messageAdditional !== message) {
-      message = message + ' ' + messageAdditional;
-    } else {
-      getMessage(MESSAGES); // Если выпали одинаковые сообщения, то запускаем функцию заново изнутри (так вообще можно?)
-    }
+// Перемешивание всего массива
+var shuffleArray = function (arr) {
+  var j;
+  var temp;
+  for (var i = arr.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    temp = arr[j];
+    arr[j] = arr[i];
+    arr[i] = temp;
+  }
+  return arr;
+};
+
+// Генерирует коммент из одного или двух элементов массива с сообщениями.
+var getMessage = function (messages) {
+  var shuffledMessages = shuffleArray(messages); // Перемешанный массив сообщений
+  var message = shuffledMessages.shift(); // Вырезает первый элемент (перемешанного ранее) массива сообщений. Далее бывший второй элемент станет первым
+  var isTwoMessages = Math.round(Math.random()) === 1; // Случайным образом задаёт истинность применения двух элементов массива сообщений
+  if (isTwoMessages) {
+    var messageAdditional = shuffledMessages[0]; // Берёт первый элемент массива сообщений (перемешанного и без вырезанного элемента)
+    message += ' ' + messageAdditional;
   }
   return message;
 };
 
 // Создаёт коммент с генерируемым содержимым
-var COMMENT = {
+var comment = {
   avatar: randomizeArrayValue(AVATARS),
   message: getMessage(MESSAGES),
   name: randomizeArrayValue(NAMES)
@@ -44,12 +53,12 @@ var COMMENT = {
 /* var getComments = function (amount) {
   var commentArr = [];
   for (var i = 0; i < amount; i++) {
-    var COMMENT = {
+    var comment = {
       avatar: randomizeArrayValue(AVATARS),
       message: randomizeArrayValue(MESSAGES),
       name: randomizeArrayValue(NAMES)
     };
-    commentArr[i] = COMMENT;
+    commentArr[i] = comment;
   }
   return commentArr;
 }; */
@@ -59,16 +68,20 @@ var getCommentAmount = function () {
   return Math.round(Math.random() * (4 - 1) + 1);
 };
 
+var getLikeAmount = function () {
+  return Math.floor(Math.random() * (200 - 15) + 15);
+};
+
 // Создаёт массив объектов с данными карточек
 var renderCards = function () {
   var arrCards = [];
   for (var i = 0; i < CARD_AMOUNT; i++) {
     var card = {};
     card.url = 'photos/' + (i + 1) + '.jpg';
-    card.likes = Math.floor(Math.random() * (200 - 15) + 15);
+    card.likes = getLikeAmount();
     card.comments = [];
     for (var j = 0; j < getCommentAmount(); j++) {
-      card.comments[j] = COMMENT;
+      card.comments[j] = comment;
     }
     arrCards[i] = card;
   }
