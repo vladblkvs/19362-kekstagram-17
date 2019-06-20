@@ -63,14 +63,16 @@ var comment = {
   return commentArr;
 }; */
 
-// Рандомизирует количество комментов от 1 до 4 (собственный случайный выбор)
-var getCommentAmount = function () {
-  return Math.round(Math.random() * (4 - 1) + 1);
+// Рандомизирует количество комментов от min до max
+var getNumberInRange = function (min, max) {
+  return Math.floor(Math.random() * (max + 1 - min) + min);
 };
 
-var getLikeAmount = function () {
-  return Math.floor(Math.random() * (200 - 15) + 15);
-};
+var MIN_LIKES_COUNT = 15;
+var MAX_LIKES_COUNT = 200;
+
+var MIN_COMMENTS_COUNT = 1;
+var MAX_COMMENTS_COUNT = 4;
 
 // Создаёт массив объектов с данными карточек
 var renderCards = function () {
@@ -78,9 +80,9 @@ var renderCards = function () {
   for (var i = 0; i < CARD_AMOUNT; i++) {
     var card = {};
     card.url = 'photos/' + (i + 1) + '.jpg';
-    card.likes = getLikeAmount();
+    card.likes = getNumberInRange(MIN_LIKES_COUNT, MAX_LIKES_COUNT);
     card.comments = [];
-    for (var j = 0; j < getCommentAmount(); j++) {
+    for (var j = 0; j < getNumberInRange(MIN_COMMENTS_COUNT, MAX_COMMENTS_COUNT); j++) {
       card.comments[j] = comment;
     }
     arrCards[i] = card;
@@ -102,7 +104,7 @@ var renderCard = function (card) {
 
   cardElement.querySelector('.picture__img').src = card.url;
   cardElement.querySelector('.picture__likes').textContent = card.likes;
-  cardElement.querySelector('.picture__comments').textContent = getCommentAmount();
+  cardElement.querySelector('.picture__comments').textContent = getNumberInRange(MIN_COMMENTS_COUNT, MAX_COMMENTS_COUNT);
 
   return cardElement;
 };
