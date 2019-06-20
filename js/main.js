@@ -115,3 +115,38 @@ for (var i = 0; i < CARD_AMOUNT; i++) {
   fragment.appendChild(renderCard(cards[i]));
 }
 pictureListElement.appendChild(fragment);
+
+// Форма загрузки изображения
+var imgUploadForm = document.querySelector('.img-upload__form');
+var imgUploadOverlay = document.querySelector('.img-upload__overlay');
+var imgUploadInput = document.querySelector('.img-upload__input');
+var uploadCancel = imgUploadOverlay.querySelector('.img-upload__cancel');
+var ESC_KEYCODE = 27;
+
+// Загрузка изображения
+var openPopup = function () {
+  imgUploadOverlay.classList.remove('hidden');
+
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+imgUploadInput.addEventListener('change', openPopup);
+
+// Закрытие окна загрузки изображения
+var closePopup = function () {
+  imgUploadOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    evt.preventDefault();
+    closePopup();
+    imgUploadForm.reset(); // Сброс значения выбора файла
+  }
+};
+
+uploadCancel.addEventListener('click', closePopup);
+
+// Обработчик наложения фильтра
+// var levelPin = document.querySelector('.effect-level__pin');
