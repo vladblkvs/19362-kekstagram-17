@@ -148,5 +148,31 @@ var onPopupEscPress = function (evt) {
 
 uploadCancel.addEventListener('click', closePopup);
 
-// Обработчик наложения фильтра
-// var levelPin = document.querySelector('.effect-level__pin');
+// Наложение фильтров
+var effects = [
+  'effects__preview--none',
+  'effects__preview--chrome',
+  'effects__preview--sepia',
+  'effects__preview--marvin',
+  'effects__preview--phobos',
+  'effects__preview--heat'
+];
+
+var thumbnails = document.querySelectorAll('.effects__radio');
+var uploadPreview = document.querySelector('.img-upload__preview');
+
+var onThumbnailClick = function (thumbnail, effect) {
+  thumbnail.addEventListener('click', function () {
+    uploadPreview.className = ''; // Очистка списка классов
+    uploadPreview.classList.add('img-upload__preview', effect);
+  });
+};
+
+for (var j = 0; j < thumbnails.length; j++) {
+  onThumbnailClick(thumbnails[j], effects[j]);
+}
+
+var effectLevelPin = document.querySelector('.effect-level__pin');
+effectLevelPin.addEventListener('mouseup', function () {
+
+});
