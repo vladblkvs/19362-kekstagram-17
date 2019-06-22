@@ -49,20 +49,6 @@ var comment = {
   name: randomizeArrayValue(NAMES)
 };
 
-// Получалось бы просто 25 комментов
-/* var getComments = function (amount) {
-  var commentArr = [];
-  for (var i = 0; i < amount; i++) {
-    var comment = {
-      avatar: randomizeArrayValue(AVATARS),
-      message: randomizeArrayValue(MESSAGES),
-      name: randomizeArrayValue(NAMES)
-    };
-    commentArr[i] = comment;
-  }
-  return commentArr;
-}; */
-
 // Рандомизирует количество комментов от min до max
 var getNumberInRange = function (min, max) {
   return Math.floor(Math.random() * (max + 1 - min) + min);
@@ -126,7 +112,7 @@ var ESC_KEYCODE = 27;
 // Загрузка изображения
 var openPopup = function () {
   imgUploadOverlay.classList.remove('hidden');
-
+  uploadPreview.classList.add('effects__preview--none');
   document.addEventListener('keydown', onPopupEscPress);
 };
 
@@ -135,6 +121,7 @@ imgUploadInput.addEventListener('change', openPopup);
 // Закрытие окна загрузки изображения
 var closePopup = function () {
   imgUploadOverlay.classList.add('hidden');
+  resetEffectAttributes(uploadPreview, 'effects__preview--none');
   document.removeEventListener('keydown', onPopupEscPress);
 };
 
@@ -148,6 +135,13 @@ var onPopupEscPress = function (evt) {
 
 uploadCancel.addEventListener('click', closePopup);
 
+// Сброс классов и стилей эффектов
+var resetEffectAttributes = function (element, effect) {
+  element.removeAttribute('style');
+  element.className = '';
+  element.classList.add('img-upload__preview', effect);
+};
+
 // Наложение фильтров
 var effects = [
   'effects__preview--none',
@@ -158,13 +152,33 @@ var effects = [
   'effects__preview--heat'
 ];
 
+var effectStyles = [
+  'none',
+  'grayscale(0.3)',
+  'sepia(0.3)',
+  'invert(30%)',
+  'blur(1px)',
+  'brightness(1)'
+];
+
 var thumbnails = document.querySelectorAll('.effects__radio');
 var uploadPreview = document.querySelector('.img-upload__preview');
+var effectLevelPin = document.querySelector('.effect-level__pin');
+
+
+/* Скрытие ползунка
+var effectLevelBlock = imgUploadOverlay.querySelector('.effect-level');
+effectLevelBlock.classList.add('hidden'); */
 
 var onThumbnailClick = function (thumbnail, effect) {
   thumbnail.addEventListener('click', function () {
-    uploadPreview.className = ''; // Очистка списка классов
-    uploadPreview.classList.add('img-upload__preview', effect);
+    resetEffectAttributes(uploadPreview, effect);
+  });
+};
+
+var onPinMouseUp = function (effect) {
+  effectLevelPin.addEventListener('mouseup', function () {
+    uploadPreview.style.filter = effect;
   });
 };
 
@@ -172,7 +186,4 @@ for (var j = 0; j < thumbnails.length; j++) {
   onThumbnailClick(thumbnails[j], effects[j]);
 }
 
-var effectLevelPin = document.querySelector('.effect-level__pin');
-effectLevelPin.addEventListener('mouseup', function () {
-
-});
+onPinMouseUp(effectStyles[0]); // Тестовое значение
