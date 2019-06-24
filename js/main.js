@@ -137,7 +137,7 @@ uploadCancel.addEventListener('click', closePopup);
 var resetEffectAttributes = function (element, effect) {
   element.removeAttribute('style');
   element.className = '';
-  element.classList.add('img-upload__preview', effect);
+  element.classList.add('img-upload__preview', effect.class);
 };
 
 // Наложение фильтров
@@ -147,38 +147,34 @@ var effectLevelPin = document.querySelector('.effect-level__pin');
 
 var effects = {
   'effect-none': {
-    id: 'effect-none',
     class: 'effects__preview--none',
     cssStyle: 'none'
   },
   'effect-chrome': {
-    id: 'effect-chrome',
     class: 'effects__preview--chrome',
-    cssStyle: 'grayscale(0.3)',
+    cssStyle: 'grayscale',
     min: 0,
     max: 1
   },
   'effect-sepia': {
-    id: 'effect-sepia',
     class: 'effects__preview--sepia',
     cssStyle: 'sepia',
     min: 0,
     max: 1
   },
   'effect-marvin': {
-    id: 'effect-marvin',
     class: 'effects__preview--marvin',
-    cssStyle: 'invert'
+    cssStyle: 'invert',
+    min: 0,
+    max: 1
   },
   'effect-phobos': {
-    id: 'effect-phobos',
     class: 'effects__preview--phobos',
     cssStyle: 'blur',
     min: 0,
     max: 3
   },
   'effect-heat': {
-    id: 'effect-heat',
     class: 'effects__preview--heat',
     cssStyle: 'brightness',
     min: 0,
@@ -207,14 +203,21 @@ var onThumbnailClick = function (thumbnail, effect) {
   });
 };
 
+for (var j = 0; j < thumbnails.length; j++) {
+  onThumbnailClick(thumbnails[j], effects[thumbnails[j].id]);
+}
+
+var effectLevelLineLength = 453;
+var pinPosition = 91;
+
+var getEffectLevel = function (max) {
+  return Math.round((pinPosition * max / effectLevelLineLength) * 100) / 100; // Округление до сотых долей
+};
+
 var onPinMouseUp = function (effect) {
   effectLevelPin.addEventListener('mouseup', function () {
-    uploadPreview.style.filter = effect;
+    uploadPreview.style.filter = effect + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
   });
 };
 
-for (var j = 0; j < thumbnails.length; j++) {
-  onThumbnailClick(thumbnails[j], effects[thumbnails[j].id].class);
-}
-
-onPinMouseUp(effects[0].cssStyle); // Тестовое значение
+onPinMouseUp(effects['effect-chrome'].cssStyle); // Тестовое значение
