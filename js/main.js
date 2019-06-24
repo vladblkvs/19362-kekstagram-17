@@ -78,11 +78,7 @@ var renderCards = function () {
 var cards = renderCards(); // Массив, принимающий значение функции создания объектов карточек
 
 // Поиск шаблона
-var picture = document.querySelector('#picture')
-.content
-.querySelector('.picture');
-
-var pictureListElement = document.querySelector('.pictures'); // Определяет место вставки блока из шаблона
+var picture = document.querySelector('#picture').content.querySelector('.picture');
 
 // Заполняет содержимое карточки
 var renderCard = function (card) {
@@ -96,6 +92,7 @@ var renderCard = function (card) {
 };
 
 // Вставляет циклом карточки в место, определённое переменной pictureListElement
+var pictureListElement = document.querySelector('.pictures');
 var fragment = document.createDocumentFragment();
 for (var i = 0; i < CARD_AMOUNT; i++) {
   fragment.appendChild(renderCard(cards[i]));
@@ -144,28 +141,44 @@ var resetEffectAttributes = function (element, effect) {
 };
 
 // Наложение фильтров
-var effects = [
-  'effects__preview--none',
-  'effects__preview--chrome',
-  'effects__preview--sepia',
-  'effects__preview--marvin',
-  'effects__preview--phobos',
-  'effects__preview--heat'
-];
-
-var effectStyles = [
-  'none',
-  'grayscale(0.3)',
-  'sepia(0.3)',
-  'invert(30%)',
-  'blur(1px)',
-  'brightness(1)'
-];
-
 var thumbnails = document.querySelectorAll('.effects__radio');
 var uploadPreview = document.querySelector('.img-upload__preview');
 var effectLevelPin = document.querySelector('.effect-level__pin');
 
+var effects = {
+  ORIGINAL: {
+    class: 'effects__preview--none',
+    cssStyle: 'none'
+  },
+  CHROME: {
+    class: 'effects__preview--chrome',
+    cssStyle: 'grayscale(0.3)',
+    min: 0,
+    max: 1
+  },
+  SEPIA: {
+    class: 'effects__preview--sepia',
+    cssStyle: 'sepia',
+    min: 0,
+    max: 1
+  },
+  MARVIN: {
+    class: 'effects__preview--marvin',
+    cssStyle: 'invert'
+  },
+  PHOBOS: {
+    class: 'effects__preview--phobos',
+    cssStyle: 'blur',
+    min: 0,
+    max: 3
+  },
+  HEAT: {
+    class: 'effects__preview--heat',
+    cssStyle: 'brightness',
+    min: 0,
+    max: 1
+  }
+};
 
 var effectLevelBlock = imgUploadOverlay.querySelector('.effect-level');
 
@@ -198,4 +211,4 @@ for (var j = 0; j < thumbnails.length; j++) {
   onThumbnailClick(thumbnails[j], effects[j]);
 }
 
-onPinMouseUp(effectStyles[0]); // Тестовое значение
+onPinMouseUp(effects[0].cssStyle); // Тестовое значение
