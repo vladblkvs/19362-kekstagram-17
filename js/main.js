@@ -114,6 +114,7 @@ var openPopup = function () {
   imgUploadOverlay.classList.remove('hidden');
   uploadPreview.classList.add('effects__preview--none');
   document.addEventListener('keydown', onPopupEscPress);
+  hideLevelBlock();
 };
 
 imgUploadInput.addEventListener('change', openPopup);
@@ -166,13 +167,24 @@ var uploadPreview = document.querySelector('.img-upload__preview');
 var effectLevelPin = document.querySelector('.effect-level__pin');
 
 
-/* Скрытие ползунка
 var effectLevelBlock = imgUploadOverlay.querySelector('.effect-level');
-effectLevelBlock.classList.add('hidden'); */
 
-var onThumbnailClick = function (thumbnail, effect) {
+var hideLevelBlock = function () {
+  effectLevelBlock.classList.add('hidden');
+};
+
+var showLevelBlock = function () {
+  effectLevelBlock.classList.remove('hidden');
+};
+
+var onThumbnailClick = function (thumbnail, effect, index) {
   thumbnail.addEventListener('click', function () {
     resetEffectAttributes(uploadPreview, effect);
+    if (index !== 0) {
+      showLevelBlock();
+    } else {
+      hideLevelBlock();
+    }
   });
 };
 
@@ -183,7 +195,8 @@ var onPinMouseUp = function (effect) {
 };
 
 for (var j = 0; j < thumbnails.length; j++) {
-  onThumbnailClick(thumbnails[j], effects[j]);
+  var thumbnailsIndex = j;
+  onThumbnailClick(thumbnails[j], effects[j], thumbnailsIndex);
 }
 
 onPinMouseUp(effectStyles[0]); // Тестовое значение
