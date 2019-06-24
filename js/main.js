@@ -177,13 +177,13 @@ var showLevelBlock = function () {
   effectLevelBlock.classList.remove('hidden');
 };
 
-var onThumbnailClick = function (thumbnail, effect, index) {
+var onThumbnailClick = function (thumbnail, effect) {
   thumbnail.addEventListener('click', function () {
     resetEffectAttributes(uploadPreview, effect);
-    if (index !== 0) {
-      showLevelBlock();
-    } else {
+    if (uploadPreview.classList.contains('effects__preview--none')) {
       hideLevelBlock();
+    } else {
+      showLevelBlock();
     }
   });
 };
@@ -195,8 +195,7 @@ var onPinMouseUp = function (effect) {
 };
 
 for (var j = 0; j < thumbnails.length; j++) {
-  var thumbnailsIndex = j;
-  onThumbnailClick(thumbnails[j], effects[j], thumbnailsIndex);
+  onThumbnailClick(thumbnails[j], effects[j]);
 }
 
 onPinMouseUp(effectStyles[0]); // Тестовое значение
