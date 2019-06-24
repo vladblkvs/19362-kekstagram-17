@@ -147,32 +147,38 @@ var effectLevelPin = document.querySelector('.effect-level__pin');
 
 var effects = {
   ORIGINAL: {
+    id: 'effect-none',
     class: 'effects__preview--none',
     cssStyle: 'none'
   },
   CHROME: {
+    id: 'effect-chrome',
     class: 'effects__preview--chrome',
     cssStyle: 'grayscale(0.3)',
     min: 0,
     max: 1
   },
   SEPIA: {
+    id: 'effect-sepia',
     class: 'effects__preview--sepia',
     cssStyle: 'sepia',
     min: 0,
     max: 1
   },
   MARVIN: {
+    id: 'effect-marvin',
     class: 'effects__preview--marvin',
     cssStyle: 'invert'
   },
   PHOBOS: {
+    id: 'effect-phobos',
     class: 'effects__preview--phobos',
     cssStyle: 'blur',
     min: 0,
     max: 3
   },
   HEAT: {
+    id: 'effect-heat',
     class: 'effects__preview--heat',
     cssStyle: 'brightness',
     min: 0,
@@ -208,7 +214,7 @@ var onPinMouseUp = function (effect) {
 };
 
 for (var j = 0; j < thumbnails.length; j++) {
-  onThumbnailClick(thumbnails[j], effects[j]);
+  onThumbnailClick(thumbnails[j], effects[thumbnails[j].id]);
 }
 
 onPinMouseUp(effects[0].cssStyle); // Тестовое значение
