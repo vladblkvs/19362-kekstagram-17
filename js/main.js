@@ -2,6 +2,7 @@
 
 // Количество карточек с фотками на странице
 var CARD_AMOUNT = 25;
+var MAX_PERCENT = 100;
 
 // Рандомизатор массивов, выдаёт случайный элемент
 var randomizeArrayValue = function (arr) {
@@ -131,12 +132,17 @@ var closePopup = function () {
   effectLevelPin.removeEventListener('mouseup', changeLevelClass);
 };
 
+var commentField = imgUploadOverlay.querySelector('.text__description');
+
 var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    evt.preventDefault();
-    closePopup();
-    imgUploadForm.reset(); // Сброс значения выбора файла
+  if (commentField !== document.activeElement) { // Запрещает закрыть попап кнокой ESC, если курсор в поле коммента
+    if (evt.keyCode === ESC_KEYCODE) {
+      evt.preventDefault();
+      closePopup();
+      imgUploadForm.reset(); // Сброс значения выбора файла
+    }
   }
+
 };
 
 uploadCancel.addEventListener('click', closePopup);
@@ -211,6 +217,8 @@ var onThumbnailClick = function (thumbnail, effect) {
     } else {
       showLevelBlock();
     }
+    /* console.log(getLevelLineLength());
+    return getLevelLineLength(); */
   });
 };
 
@@ -218,26 +226,18 @@ for (var j = 0; j < thumbnails.length; j++) {
   onThumbnailClick(thumbnails[j], effects[thumbnails[j].id]);
 }
 
-var effectLevelLineLength = 453; // Длина шкалы уровня насыщенности эффекта
-var pinPosition = effectLevelLineLength / 100 * effectLevelValue; // Местоположение пина
+/* Вычисление длины блока регулировки эффекта
+  var getLevelLineLength = function () {
+  return effectLevelBlock.querySelector('.effect-level__line').offsetWidth;
+}; */
+
+var levelLineLength = 453;
+
+var pinPosition = levelLineLength / MAX_PERCENT * effectLevelValue; // Местоположение пина
 
 var getEffectLevel = function (max) {
-  return Math.round((pinPosition * max / effectLevelLineLength) * 100) / 100; // Округление до сотых долей
+  return Math.round((pinPosition * max / levelLineLength) * MAX_PERCENT) / MAX_PERCENT; // Округление до сотых долей
 };
-
-/* var changeLevelClass = function () {
-  if (uploadPreview.classList.contains('effects__preview--chrome')) {
-    uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
-  } else if (uploadPreview.classList.contains('effects__preview--sepia')) {
-    uploadPreview.style.filter = effects['effect-sepia'].cssStyle + '(' + getEffectLevel(effects['effect-sepia'].max) + ')';
-  } else if (uploadPreview.classList.contains('effects__preview--marvin')) {
-    uploadPreview.style.filter = effects['effect-marvin'].cssStyle + '(' + getEffectLevel(effects['effect-marvin'].max) + ')';
-  } else if (uploadPreview.classList.contains('effects__preview--phobos')) {
-    uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos'].max) + 'px)';
-  } else if (uploadPreview.classList.contains('effects__preview--heat')) {
-    uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
-  }
-}; */
 
 var changeLevelClass = function () {
   switch (true) {
@@ -261,10 +261,9 @@ var changeLevelClass = function () {
 
 // Масштабирование картинки
 var scaleValue = imgUploadOverlay.querySelector('.scale__control--value').value;
-var numericalScaleValue = Number(scaleValue.replace('%', ''));
+var numericalScaleValue = parseInt(scaleValue.replace('0', ''), 10);
 var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
 var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
-
 var onScaleSmallerClick = function () {
   if (numericalScaleValue <= 50) {
     numericalScaleValue = 25;
@@ -273,7 +272,7 @@ var onScaleSmallerClick = function () {
   }
   scaleValue = numericalScaleValue + '%';
   imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
-  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / 100) + ')';
+  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / MAX_PERCENT) + ')';
 };
 
 var onScaleBiggerClick = function () {
@@ -284,5 +283,5 @@ var onScaleBiggerClick = function () {
   }
   scaleValue = numericalScaleValue + '%';
   imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
-  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / 100) + ')';
+  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / MAX_PERCENT) + ')';
 };
