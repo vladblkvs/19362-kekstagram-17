@@ -136,8 +136,8 @@ uploadCancel.addEventListener('click', closePopup);
 // Сброс классов и стилей эффектов
 var resetEffectAttributes = function (element, effect) {
   element.removeAttribute('style');
-  element.className = '';
-  element.classList.add('img-upload__preview', effect.class);
+  element.classList = '';
+  element.classList.add('img-upload__preview', effect);
 };
 
 // Наложение фильтров
@@ -194,7 +194,7 @@ var showLevelBlock = function () {
 
 var onThumbnailClick = function (thumbnail, effect) {
   thumbnail.addEventListener('click', function () {
-    resetEffectAttributes(uploadPreview, effect);
+    resetEffectAttributes(uploadPreview, effect.class);
     if (uploadPreview.classList.contains('effects__preview--none')) {
       hideLevelBlock();
     } else {
@@ -214,10 +214,24 @@ var getEffectLevel = function (max) {
   return Math.round((pinPosition * max / effectLevelLineLength) * 100) / 100; // Округление до сотых долей
 };
 
-var onPinMouseUp = function (effect) {
+var onPinMouseUp = function () {
   effectLevelPin.addEventListener('mouseup', function () {
-    uploadPreview.style.filter = effect + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
+    changeLevelClass();
   });
 };
 
-onPinMouseUp(effects['effect-chrome'].cssStyle); // Тестовое значение
+onPinMouseUp(); // Тестовое значение
+
+var changeLevelClass = function () {
+  if (uploadPreview.classList.contains('effects__preview--chrome')) {
+    uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
+  } else if (uploadPreview.classList.contains('effects__preview--sepia')) {
+    uploadPreview.style.filter = effects['effect-sepia'].cssStyle + '(' + getEffectLevel(effects['effect-sepia'].max) + ')';
+  } else if (uploadPreview.classList.contains('effects__preview--marvin')) {
+    uploadPreview.style.filter = effects['effect-marvin'].cssStyle + '(' + getEffectLevel(effects['effect-marvin'].max) + ')';
+  } else if (uploadPreview.classList.contains('effects__preview--phobos')) {
+    uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos'].max) + 'px)';
+  } else if (uploadPreview.classList.contains('effects__preview--heat')) {
+    uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
+  }
+};
