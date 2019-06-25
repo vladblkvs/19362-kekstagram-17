@@ -166,7 +166,7 @@ var effects = {
     class: 'effects__preview--marvin',
     cssStyle: 'invert',
     min: 0,
-    max: 1
+    max: 100
   },
   'effect-phobos': {
     class: 'effects__preview--phobos',
@@ -178,11 +178,12 @@ var effects = {
     class: 'effects__preview--heat',
     cssStyle: 'brightness',
     min: 0,
-    max: 1
+    max: 3
   }
 };
 
 var effectLevelBlock = imgUploadOverlay.querySelector('.effect-level');
+var effectLevelValue = effectLevelBlock.querySelector('.effect-level__value').value; // Значение насыщенности фильтра
 
 var hideLevelBlock = function () {
   effectLevelBlock.classList.add('hidden');
@@ -207,8 +208,8 @@ for (var j = 0; j < thumbnails.length; j++) {
   onThumbnailClick(thumbnails[j], effects[thumbnails[j].id]);
 }
 
-var effectLevelLineLength = 453;
-var pinPosition = 91;
+var effectLevelLineLength = 453; // Длина шкалы уровня насыщенности эффекта
+var pinPosition = effectLevelLineLength / 100 * effectLevelValue; // Местоположение пина
 
 var getEffectLevel = function (max) {
   return Math.round((pinPosition * max / effectLevelLineLength) * 100) / 100; // Округление до сотых долей
@@ -220,9 +221,9 @@ var onPinMouseUp = function () {
   });
 };
 
-onPinMouseUp(); // Тестовое значение
+onPinMouseUp();
 
-var changeLevelClass = function () {
+/* var changeLevelClass = function () {
   if (uploadPreview.classList.contains('effects__preview--chrome')) {
     uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
   } else if (uploadPreview.classList.contains('effects__preview--sepia')) {
@@ -233,5 +234,25 @@ var changeLevelClass = function () {
     uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos'].max) + 'px)';
   } else if (uploadPreview.classList.contains('effects__preview--heat')) {
     uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
+  }
+}; */
+
+var changeLevelClass = function () {
+  switch (true) {
+    case uploadPreview.classList.contains('effects__preview--chrome'):
+      uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
+      break;
+    case uploadPreview.classList.contains('effects__preview--sepia'):
+      uploadPreview.style.filter = effects['effect-sepia'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
+      break;
+    case uploadPreview.classList.contains('effects__preview--marvin'):
+      uploadPreview.style.filter = effects['effect-marvin'].cssStyle + '(' + getEffectLevel(effects['effect-marvin'].max) + '%)';
+      break;
+    case uploadPreview.classList.contains('effects__preview--phobos'):
+      uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos'].max) + 'px)';
+      break;
+    case uploadPreview.classList.contains('effects__preview--heat'):
+      uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
+      break;
   }
 };
