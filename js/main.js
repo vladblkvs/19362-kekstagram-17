@@ -110,7 +110,12 @@ var ESC_KEYCODE = 27;
 var openPopup = function () {
   imgUploadOverlay.classList.remove('hidden');
   uploadPreview.classList.add('effects__preview--none');
+  imgUploadOverlay.querySelector('.scale__control--value').value = '100%';
+  numericalScaleValue = 100;
   document.addEventListener('keydown', onPopupEscPress);
+  scaleSmaller.addEventListener('click', onScaleSmallerClick);
+  scaleBigger.addEventListener('click', onScaleBiggerClick);
+  effectLevelPin.addEventListener('mouseup', changeLevelClass);
   hideLevelBlock();
 };
 
@@ -121,6 +126,9 @@ var closePopup = function () {
   imgUploadOverlay.classList.add('hidden');
   resetEffectAttributes(uploadPreview, 'effects__preview--none');
   document.removeEventListener('keydown', onPopupEscPress);
+  scaleSmaller.removeEventListener('click', onScaleSmallerClick);
+  scaleBigger.removeEventListener('click', onScaleBiggerClick);
+  effectLevelPin.removeEventListener('mouseup', changeLevelClass);
 };
 
 var onPopupEscPress = function (evt) {
@@ -135,6 +143,8 @@ uploadCancel.addEventListener('click', closePopup);
 
 // Сброс классов и стилей эффектов
 var resetEffectAttributes = function (element, effect) {
+  imgUploadOverlay.querySelector('.scale__control--value').value = '100%';
+  numericalScaleValue = 100;
   element.removeAttribute('style');
   element.classList = '';
   element.classList.add('img-upload__preview', effect);
@@ -215,14 +225,6 @@ var getEffectLevel = function (max) {
   return Math.round((pinPosition * max / effectLevelLineLength) * 100) / 100; // Округление до сотых долей
 };
 
-var onPinMouseUp = function () {
-  effectLevelPin.addEventListener('mouseup', function () {
-    changeLevelClass();
-  });
-};
-
-onPinMouseUp();
-
 /* var changeLevelClass = function () {
   if (uploadPreview.classList.contains('effects__preview--chrome')) {
     uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
@@ -255,4 +257,32 @@ var changeLevelClass = function () {
       uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
       break;
   }
+};
+
+// Масштабирование картинки
+var scaleValue = imgUploadOverlay.querySelector('.scale__control--value').value;
+var numericalScaleValue = Number(scaleValue.replace('%', ''));
+var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
+var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
+
+var onScaleSmallerClick = function () {
+  if (numericalScaleValue <= 50) {
+    numericalScaleValue = 25;
+  } else {
+    numericalScaleValue -= 25;
+  }
+  scaleValue = numericalScaleValue + '%';
+  imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
+  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / 100) + ')';
+};
+
+var onScaleBiggerClick = function () {
+  if (numericalScaleValue > 75) {
+    numericalScaleValue = 100;
+  } else {
+    numericalScaleValue += 25;
+  }
+  scaleValue = numericalScaleValue + '%';
+  imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
+  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / 100) + ')';
 };
