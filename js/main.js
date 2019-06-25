@@ -49,20 +49,6 @@ var comment = {
   name: randomizeArrayValue(NAMES)
 };
 
-// Получалось бы просто 25 комментов
-/* var getComments = function (amount) {
-  var commentArr = [];
-  for (var i = 0; i < amount; i++) {
-    var comment = {
-      avatar: randomizeArrayValue(AVATARS),
-      message: randomizeArrayValue(MESSAGES),
-      name: randomizeArrayValue(NAMES)
-    };
-    commentArr[i] = comment;
-  }
-  return commentArr;
-}; */
-
 // Рандомизирует количество комментов от min до max
 var getNumberInRange = function (min, max) {
   return Math.floor(Math.random() * (max + 1 - min) + min);
@@ -92,11 +78,7 @@ var renderCards = function () {
 var cards = renderCards(); // Массив, принимающий значение функции создания объектов карточек
 
 // Поиск шаблона
-var picture = document.querySelector('#picture')
-.content
-.querySelector('.picture');
-
-var pictureListElement = document.querySelector('.pictures'); // Определяет место вставки блока из шаблона
+var picture = document.querySelector('#picture').content.querySelector('.picture');
 
 // Заполняет содержимое карточки
 var renderCard = function (card) {
@@ -110,8 +92,197 @@ var renderCard = function (card) {
 };
 
 // Вставляет циклом карточки в место, определённое переменной pictureListElement
+var pictureListElement = document.querySelector('.pictures');
 var fragment = document.createDocumentFragment();
 for (var i = 0; i < CARD_AMOUNT; i++) {
   fragment.appendChild(renderCard(cards[i]));
 }
 pictureListElement.appendChild(fragment);
+
+// Форма загрузки изображения
+var imgUploadForm = document.querySelector('.img-upload__form');
+var imgUploadOverlay = document.querySelector('.img-upload__overlay');
+var imgUploadInput = document.querySelector('.img-upload__input');
+var uploadCancel = imgUploadOverlay.querySelector('.img-upload__cancel');
+var ESC_KEYCODE = 27;
+
+// Загрузка изображения
+var openPopup = function () {
+  imgUploadOverlay.classList.remove('hidden');
+  uploadPreview.classList.add('effects__preview--none');
+  imgUploadOverlay.querySelector('.scale__control--value').value = '100%';
+  numericalScaleValue = 100;
+  document.addEventListener('keydown', onPopupEscPress);
+  scaleSmaller.addEventListener('click', onScaleSmallerClick);
+  scaleBigger.addEventListener('click', onScaleBiggerClick);
+  effectLevelPin.addEventListener('mouseup', changeLevelClass);
+  hideLevelBlock();
+};
+
+imgUploadInput.addEventListener('change', openPopup);
+
+// Закрытие окна загрузки изображения
+var closePopup = function () {
+  imgUploadOverlay.classList.add('hidden');
+  resetEffectAttributes(uploadPreview, 'effects__preview--none');
+  document.removeEventListener('keydown', onPopupEscPress);
+  scaleSmaller.removeEventListener('click', onScaleSmallerClick);
+  scaleBigger.removeEventListener('click', onScaleBiggerClick);
+  effectLevelPin.removeEventListener('mouseup', changeLevelClass);
+};
+
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    evt.preventDefault();
+    closePopup();
+    imgUploadForm.reset(); // Сброс значения выбора файла
+  }
+};
+
+uploadCancel.addEventListener('click', closePopup);
+
+// Сброс классов и стилей эффектов
+var resetEffectAttributes = function (element, effect) {
+  imgUploadOverlay.querySelector('.scale__control--value').value = '100%';
+  numericalScaleValue = 100;
+  element.removeAttribute('style');
+  element.classList = '';
+  element.classList.add('img-upload__preview', effect);
+};
+
+// Наложение фильтров
+var thumbnails = document.querySelectorAll('.effects__radio');
+var uploadPreview = document.querySelector('.img-upload__preview');
+var effectLevelPin = document.querySelector('.effect-level__pin');
+
+var effects = {
+  'effect-none': {
+    class: 'effects__preview--none',
+    cssStyle: 'none'
+  },
+  'effect-chrome': {
+    class: 'effects__preview--chrome',
+    cssStyle: 'grayscale',
+    min: 0,
+    max: 1
+  },
+  'effect-sepia': {
+    class: 'effects__preview--sepia',
+    cssStyle: 'sepia',
+    min: 0,
+    max: 1
+  },
+  'effect-marvin': {
+    class: 'effects__preview--marvin',
+    cssStyle: 'invert',
+    min: 0,
+    max: 100
+  },
+  'effect-phobos': {
+    class: 'effects__preview--phobos',
+    cssStyle: 'blur',
+    min: 0,
+    max: 3
+  },
+  'effect-heat': {
+    class: 'effects__preview--heat',
+    cssStyle: 'brightness',
+    min: 0,
+    max: 3
+  }
+};
+
+var effectLevelBlock = imgUploadOverlay.querySelector('.effect-level');
+var effectLevelValue = effectLevelBlock.querySelector('.effect-level__value').value; // Значение насыщенности фильтра
+
+var hideLevelBlock = function () {
+  effectLevelBlock.classList.add('hidden');
+};
+
+var showLevelBlock = function () {
+  effectLevelBlock.classList.remove('hidden');
+};
+
+var onThumbnailClick = function (thumbnail, effect) {
+  thumbnail.addEventListener('click', function () {
+    resetEffectAttributes(uploadPreview, effect.class);
+    if (uploadPreview.classList.contains('effects__preview--none')) {
+      hideLevelBlock();
+    } else {
+      showLevelBlock();
+    }
+  });
+};
+
+for (var j = 0; j < thumbnails.length; j++) {
+  onThumbnailClick(thumbnails[j], effects[thumbnails[j].id]);
+}
+
+var effectLevelLineLength = 453; // Длина шкалы уровня насыщенности эффекта
+var pinPosition = effectLevelLineLength / 100 * effectLevelValue; // Местоположение пина
+
+var getEffectLevel = function (max) {
+  return Math.round((pinPosition * max / effectLevelLineLength) * 100) / 100; // Округление до сотых долей
+};
+
+/* var changeLevelClass = function () {
+  if (uploadPreview.classList.contains('effects__preview--chrome')) {
+    uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
+  } else if (uploadPreview.classList.contains('effects__preview--sepia')) {
+    uploadPreview.style.filter = effects['effect-sepia'].cssStyle + '(' + getEffectLevel(effects['effect-sepia'].max) + ')';
+  } else if (uploadPreview.classList.contains('effects__preview--marvin')) {
+    uploadPreview.style.filter = effects['effect-marvin'].cssStyle + '(' + getEffectLevel(effects['effect-marvin'].max) + ')';
+  } else if (uploadPreview.classList.contains('effects__preview--phobos')) {
+    uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos'].max) + 'px)';
+  } else if (uploadPreview.classList.contains('effects__preview--heat')) {
+    uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
+  }
+}; */
+
+var changeLevelClass = function () {
+  switch (true) {
+    case uploadPreview.classList.contains('effects__preview--chrome'):
+      uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
+      break;
+    case uploadPreview.classList.contains('effects__preview--sepia'):
+      uploadPreview.style.filter = effects['effect-sepia'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
+      break;
+    case uploadPreview.classList.contains('effects__preview--marvin'):
+      uploadPreview.style.filter = effects['effect-marvin'].cssStyle + '(' + getEffectLevel(effects['effect-marvin'].max) + '%)';
+      break;
+    case uploadPreview.classList.contains('effects__preview--phobos'):
+      uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos'].max) + 'px)';
+      break;
+    case uploadPreview.classList.contains('effects__preview--heat'):
+      uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
+      break;
+  }
+};
+
+// Масштабирование картинки
+var scaleValue = imgUploadOverlay.querySelector('.scale__control--value').value;
+var numericalScaleValue = Number(scaleValue.replace('%', ''));
+var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
+var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
+
+var onScaleSmallerClick = function () {
+  if (numericalScaleValue <= 50) {
+    numericalScaleValue = 25;
+  } else {
+    numericalScaleValue -= 25;
+  }
+  scaleValue = numericalScaleValue + '%';
+  imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
+  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / 100) + ')';
+};
+
+var onScaleBiggerClick = function () {
+  if (numericalScaleValue > 75) {
+    numericalScaleValue = 100;
+  } else {
+    numericalScaleValue += 25;
+  }
+  scaleValue = numericalScaleValue + '%';
+  imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
+  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / 100) + ')';
+};
