@@ -114,8 +114,8 @@ var openPopup = function () {
   imgUploadOverlay.querySelector('.scale__control--value').value = '100%';
   numericalScaleValue = 100;
   document.addEventListener('keydown', onPopupEscPress);
-  scaleSmaller.addEventListener('click', onScaleSmallerClick);
-  scaleBigger.addEventListener('click', onScaleBiggerClick);
+  scaleSmaller.addEventListener('click', onScaleBtnClick);
+  scaleBigger.addEventListener('click', onScaleBtnClick);
   effectLevelPin.addEventListener('mouseup', changeLevelClass);
   hideLevelBlock();
 };
@@ -127,8 +127,8 @@ var closePopup = function () {
   imgUploadOverlay.classList.add('hidden');
   resetEffectAttributes(uploadPreview, 'effects__preview--none');
   document.removeEventListener('keydown', onPopupEscPress);
-  scaleSmaller.removeEventListener('click', onScaleSmallerClick);
-  scaleBigger.removeEventListener('click', onScaleBiggerClick);
+  scaleSmaller.removeEventListener('click', onScaleBtnClick);
+  scaleBigger.removeEventListener('click', onScaleBtnClick);
   effectLevelPin.removeEventListener('mouseup', changeLevelClass);
 };
 
@@ -256,22 +256,28 @@ var scaleValue = imgUploadOverlay.querySelector('.scale__control--value').value;
 var numericalScaleValue = parseInt(scaleValue.replace('%', ''), 10);
 var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
 var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
-var onScaleSmallerClick = function () {
-  if (numericalScaleValue <= 50) {
-    numericalScaleValue = 25;
-  } else {
-    numericalScaleValue -= 25;
-  }
-  scaleValue = numericalScaleValue + '%';
-  imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
-  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / MAX_PERCENT) + ')';
+
+var scaleRange = {
+  max: 100,
+  min: 25,
+  step: 25
 };
 
-var onScaleBiggerClick = function () {
-  if (numericalScaleValue > 75) {
-    numericalScaleValue = 100;
-  } else {
-    numericalScaleValue += 25;
+var onScaleBtnClick = function (evt) {
+  if (evt.target === scaleSmaller) {
+    if (numericalScaleValue - scaleRange.step < scaleRange.min) {
+      numericalScaleValue = scaleRange.min;
+      return;
+    } else {
+      numericalScaleValue -= scaleRange.step;
+    }
+  } else if (evt.target === scaleBigger) {
+    if (numericalScaleValue + scaleRange.step > scaleRange.max) {
+      numericalScaleValue = scaleRange.max;
+      return;
+    } else {
+      numericalScaleValue += scaleRange.step;
+    }
   }
   scaleValue = numericalScaleValue + '%';
   imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
