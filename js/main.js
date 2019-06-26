@@ -135,14 +135,11 @@ var closePopup = function () {
 var commentField = imgUploadOverlay.querySelector('.text__description');
 
 var onPopupEscPress = function (evt) {
-  if (commentField !== document.activeElement) { // Запрещает закрыть попап кнокой ESC, если курсор в поле коммента
-    if (evt.keyCode === ESC_KEYCODE) {
-      evt.preventDefault();
-      closePopup();
-      imgUploadForm.reset(); // Сброс значения выбора файла
-    }
+  if (evt.keyCode === ESC_KEYCODE && commentField !== document.activeElement) {
+    evt.preventDefault();
+    closePopup();
+    imgUploadForm.reset(); // Сброс значения выбора файла
   }
-
 };
 
 uploadCancel.addEventListener('click', closePopup);
@@ -207,6 +204,7 @@ var hideLevelBlock = function () {
 
 var showLevelBlock = function () {
   effectLevelBlock.classList.remove('hidden');
+  getLevelLineLength();
 };
 
 var onThumbnailClick = function (thumbnail, effect) {
@@ -217,8 +215,6 @@ var onThumbnailClick = function (thumbnail, effect) {
     } else {
       showLevelBlock();
     }
-    /* console.log(getLevelLineLength());
-    return getLevelLineLength(); */
   });
 };
 
@@ -226,17 +222,13 @@ for (var j = 0; j < thumbnails.length; j++) {
   onThumbnailClick(thumbnails[j], effects[thumbnails[j].id]);
 }
 
-/* Вычисление длины блока регулировки эффекта
-  var getLevelLineLength = function () {
+var getLevelLineLength = function () {
   return effectLevelBlock.querySelector('.effect-level__line').offsetWidth;
-}; */
-
-var levelLineLength = 453;
-
-var pinPosition = levelLineLength / MAX_PERCENT * effectLevelValue; // Местоположение пина
+};
 
 var getEffectLevel = function (max) {
-  return Math.round((pinPosition * max / levelLineLength) * MAX_PERCENT) / MAX_PERCENT; // Округление до сотых долей
+  var pinPosition = getLevelLineLength() / MAX_PERCENT * effectLevelValue; // Местоположение пина
+  return Math.round((pinPosition * max / getLevelLineLength()) * MAX_PERCENT) / MAX_PERCENT; // Округление до сотых долей
 };
 
 var changeLevelClass = function () {
@@ -261,7 +253,7 @@ var changeLevelClass = function () {
 
 // Масштабирование картинки
 var scaleValue = imgUploadOverlay.querySelector('.scale__control--value').value;
-var numericalScaleValue = parseInt(scaleValue.replace('0', ''), 10);
+var numericalScaleValue = parseInt(scaleValue.replace('%', ''), 10);
 var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
 var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
 var onScaleSmallerClick = function () {
