@@ -253,7 +253,7 @@ var changeLevelClass = function () {
 
 // Масштабирование картинки
 var scaleValue = imgUploadOverlay.querySelector('.scale__control--value').value;
-var numericalScaleValue = parseInt(scaleValue.replace('%', ''), 10);
+var numericalScaleValue = parseInt(scaleValue, 10);
 var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
 var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
 
