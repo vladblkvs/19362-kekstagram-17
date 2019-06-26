@@ -2,6 +2,7 @@
 
 // Количество карточек с фотками на странице
 var CARD_AMOUNT = 25;
+var MAX_PERCENT = 100;
 
 // Рандомизатор массивов, выдаёт случайный элемент
 var randomizeArrayValue = function (arr) {
@@ -113,8 +114,8 @@ var openPopup = function () {
   imgUploadOverlay.querySelector('.scale__control--value').value = '100%';
   numericalScaleValue = 100;
   document.addEventListener('keydown', onPopupEscPress);
-  scaleSmaller.addEventListener('click', onScaleSmallerClick);
-  scaleBigger.addEventListener('click', onScaleBiggerClick);
+  scaleSmaller.addEventListener('click', onScaleBtnClick);
+  scaleBigger.addEventListener('click', onScaleBtnClick);
   effectLevelPin.addEventListener('mouseup', changeLevelClass);
   hideLevelBlock();
 };
@@ -126,13 +127,15 @@ var closePopup = function () {
   imgUploadOverlay.classList.add('hidden');
   resetEffectAttributes(uploadPreview, 'effects__preview--none');
   document.removeEventListener('keydown', onPopupEscPress);
-  scaleSmaller.removeEventListener('click', onScaleSmallerClick);
-  scaleBigger.removeEventListener('click', onScaleBiggerClick);
+  scaleSmaller.removeEventListener('click', onScaleBtnClick);
+  scaleBigger.removeEventListener('click', onScaleBtnClick);
   effectLevelPin.removeEventListener('mouseup', changeLevelClass);
 };
 
+var commentField = imgUploadOverlay.querySelector('.text__description');
+
 var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.keyCode === ESC_KEYCODE && commentField !== document.activeElement) {
     evt.preventDefault();
     closePopup();
     imgUploadForm.reset(); // Сброс значения выбора файла
@@ -201,6 +204,7 @@ var hideLevelBlock = function () {
 
 var showLevelBlock = function () {
   effectLevelBlock.classList.remove('hidden');
+  getLevelLineLength();
 };
 
 var onThumbnailClick = function (thumbnail, effect) {
@@ -218,26 +222,14 @@ for (var j = 0; j < thumbnails.length; j++) {
   onThumbnailClick(thumbnails[j], effects[thumbnails[j].id]);
 }
 
-var effectLevelLineLength = 453; // Длина шкалы уровня насыщенности эффекта
-var pinPosition = effectLevelLineLength / 100 * effectLevelValue; // Местоположение пина
-
-var getEffectLevel = function (max) {
-  return Math.round((pinPosition * max / effectLevelLineLength) * 100) / 100; // Округление до сотых долей
+var getLevelLineLength = function () {
+  return effectLevelBlock.querySelector('.effect-level__line').offsetWidth;
 };
 
-/* var changeLevelClass = function () {
-  if (uploadPreview.classList.contains('effects__preview--chrome')) {
-    uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
-  } else if (uploadPreview.classList.contains('effects__preview--sepia')) {
-    uploadPreview.style.filter = effects['effect-sepia'].cssStyle + '(' + getEffectLevel(effects['effect-sepia'].max) + ')';
-  } else if (uploadPreview.classList.contains('effects__preview--marvin')) {
-    uploadPreview.style.filter = effects['effect-marvin'].cssStyle + '(' + getEffectLevel(effects['effect-marvin'].max) + ')';
-  } else if (uploadPreview.classList.contains('effects__preview--phobos')) {
-    uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos'].max) + 'px)';
-  } else if (uploadPreview.classList.contains('effects__preview--heat')) {
-    uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
-  }
-}; */
+var getEffectLevel = function (max) {
+  var pinPosition = getLevelLineLength() / MAX_PERCENT * effectLevelValue; // Местоположение пина
+  return Math.round((pinPosition * max / getLevelLineLength()) * MAX_PERCENT) / MAX_PERCENT; // Округление до сотых долей
+};
 
 var changeLevelClass = function () {
   switch (true) {
@@ -261,28 +253,33 @@ var changeLevelClass = function () {
 
 // Масштабирование картинки
 var scaleValue = imgUploadOverlay.querySelector('.scale__control--value').value;
-var numericalScaleValue = Number(scaleValue.replace('%', ''));
+var numericalScaleValue = parseInt(scaleValue.replace('%', ''), 10);
 var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
 var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
 
-var onScaleSmallerClick = function () {
-  if (numericalScaleValue <= 50) {
-    numericalScaleValue = 25;
-  } else {
-    numericalScaleValue -= 25;
-  }
-  scaleValue = numericalScaleValue + '%';
-  imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
-  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / 100) + ')';
+var scaleRange = {
+  max: 100,
+  min: 25,
+  step: 25
 };
 
-var onScaleBiggerClick = function () {
-  if (numericalScaleValue > 75) {
-    numericalScaleValue = 100;
-  } else {
-    numericalScaleValue += 25;
+var onScaleBtnClick = function (evt) {
+  if (evt.target === scaleSmaller) {
+    if (numericalScaleValue - scaleRange.step < scaleRange.min) {
+      numericalScaleValue = scaleRange.min;
+      return;
+    } else {
+      numericalScaleValue -= scaleRange.step;
+    }
+  } else if (evt.target === scaleBigger) {
+    if (numericalScaleValue + scaleRange.step > scaleRange.max) {
+      numericalScaleValue = scaleRange.max;
+      return;
+    } else {
+      numericalScaleValue += scaleRange.step;
+    }
   }
   scaleValue = numericalScaleValue + '%';
   imgUploadOverlay.querySelector('.scale__control--value').value = scaleValue;
-  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / 100) + ')';
+  uploadPreview.style.transform = 'scale(' + (numericalScaleValue / MAX_PERCENT) + ')';
 };
