@@ -256,7 +256,7 @@ var onLevelPinUse = function (evt) {
     }
 
     var getEffectLevel = function (effectRange) {
-      var effectLevel = Math.round((currentPinPosition * effectRange.max / getLevelLineLength()) * MAX_PERCENT) / MAX_PERCENT;
+      var effectLevel = Math.round((currentPinPosition * (effectRange.max - effectRange.min) / getLevelLineLength()) * MAX_PERCENT) / MAX_PERCENT + effectRange.min;
       if (effectLevel < effectRange.min) {
         effectLevel = effectRange.min;
       } else if (effectLevel > effectRange.max) {
