@@ -116,7 +116,7 @@ var openPopup = function () {
   document.addEventListener('keydown', onPopupEscPress);
   scaleSmaller.addEventListener('click', onScaleBtnClick);
   scaleBigger.addEventListener('click', onScaleBtnClick);
-  effectLevelPin.addEventListener('mouseup', changeLevelClass);
+  effectLevelPin.addEventListener('mousedown', onLevelPinUse);
   hideLevelBlock();
 };
 
@@ -129,7 +129,7 @@ var closePopup = function () {
   document.removeEventListener('keydown', onPopupEscPress);
   scaleSmaller.removeEventListener('click', onScaleBtnClick);
   scaleBigger.removeEventListener('click', onScaleBtnClick);
-  effectLevelPin.removeEventListener('mouseup', changeLevelClass);
+  effectLevelPin.removeEventListener('mousedown', onLevelPinUse);
 };
 
 var commentField = imgUploadOverlay.querySelector('.text__description');
@@ -157,6 +157,7 @@ var resetEffectAttributes = function (element, effect) {
 var thumbnails = document.querySelectorAll('.effects__radio');
 var uploadPreview = document.querySelector('.img-upload__preview');
 var effectLevelPin = document.querySelector('.effect-level__pin');
+var effectLevelDepth = imgUploadOverlay.querySelector('.effect-level__depth');
 
 var effects = {
   'effect-none': {
@@ -190,7 +191,7 @@ var effects = {
   'effect-heat': {
     class: 'effects__preview--heat',
     cssStyle: 'brightness',
-    min: 0,
+    min: 1,
     max: 3
   }
 };
@@ -204,7 +205,6 @@ var hideLevelBlock = function () {
 
 var showLevelBlock = function () {
   effectLevelBlock.classList.remove('hidden');
-  getLevelLineLength();
 };
 
 var onThumbnailClick = function (thumbnail, effect) {
@@ -214,6 +214,8 @@ var onThumbnailClick = function (thumbnail, effect) {
       hideLevelBlock();
     } else {
       showLevelBlock();
+      effectLevelPin.style.left = effectLevelValue + '%'; // Сброс позиции пина
+      effectLevelDepth.style.width = effectLevelPin.style.left;
     }
   });
 };
@@ -222,38 +224,81 @@ for (var j = 0; j < thumbnails.length; j++) {
   onThumbnailClick(thumbnails[j], effects[thumbnails[j].id]);
 }
 
+// Ползунок регулировки насыщенности эффектов
 var getLevelLineLength = function () {
   return effectLevelBlock.querySelector('.effect-level__line').offsetWidth;
 };
 
-var getEffectLevel = function (max) {
-  var pinPosition = getLevelLineLength() / MAX_PERCENT * effectLevelValue; // Местоположение пина
-  return Math.round((pinPosition * max / getLevelLineLength()) * MAX_PERCENT) / MAX_PERCENT; // Округление до сотых долей
-};
+var onLevelPinUse = function (evt) {
+  evt.preventDefault();
 
-var changeLevelClass = function () {
-  switch (true) {
-    case uploadPreview.classList.contains('effects__preview--chrome'):
-      uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
-      break;
-    case uploadPreview.classList.contains('effects__preview--sepia'):
-      uploadPreview.style.filter = effects['effect-sepia'].cssStyle + '(' + getEffectLevel(effects['effect-chrome'].max) + ')';
-      break;
-    case uploadPreview.classList.contains('effects__preview--marvin'):
-      uploadPreview.style.filter = effects['effect-marvin'].cssStyle + '(' + getEffectLevel(effects['effect-marvin'].max) + '%)';
-      break;
-    case uploadPreview.classList.contains('effects__preview--phobos'):
-      uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos'].max) + 'px)';
-      break;
-    case uploadPreview.classList.contains('effects__preview--heat'):
-      uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat'].max) + ')';
-      break;
-  }
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    var shiftRange = {
+      x: startCoords.x - moveEvt.clientX,
+      min: 0,
+      max: getLevelLineLength()
+    };
+
+    var currentPinPosition = effectLevelPin.offsetLeft - shiftRange.x;
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+    if (currentPinPosition >= shiftRange.min && currentPinPosition <= shiftRange.max) {
+      effectLevelPin.style.left = currentPinPosition + 'px';
+      effectLevelDepth.style.width = effectLevelPin.style.left;
+    }
+
+    var getEffectLevel = function (effectRange) {
+      var effectLevel = Math.round((currentPinPosition * effectRange.max / getLevelLineLength()) * MAX_PERCENT) / MAX_PERCENT;
+      if (effectLevel < effectRange.min) {
+        effectLevel = effectRange.min;
+      } else if (effectLevel > effectRange.max) {
+        effectLevel = effectRange.max;
+      }
+      return effectLevel;
+    };
+
+    var changeEffectLevelStyle = function () {
+      switch (true) {
+        case uploadPreview.classList.contains('effects__preview--chrome'):
+          uploadPreview.style.filter = effects['effect-chrome'].cssStyle + '(' + getEffectLevel(effects['effect-chrome']) + ')';
+          break;
+        case uploadPreview.classList.contains('effects__preview--sepia'):
+          uploadPreview.style.filter = effects['effect-sepia'].cssStyle + '(' + getEffectLevel(effects['effect-sepia']) + ')';
+          break;
+        case uploadPreview.classList.contains('effects__preview--marvin'):
+          uploadPreview.style.filter = effects['effect-marvin'].cssStyle + '(' + getEffectLevel(effects['effect-marvin']) + '%)';
+          break;
+        case uploadPreview.classList.contains('effects__preview--phobos'):
+          uploadPreview.style.filter = effects['effect-phobos'].cssStyle + '(' + getEffectLevel(effects['effect-phobos']) + 'px)';
+          break;
+        case uploadPreview.classList.contains('effects__preview--heat'):
+          uploadPreview.style.filter = effects['effect-heat'].cssStyle + '(' + getEffectLevel(effects['effect-heat']) + ')';
+          break;
+      }
+    };
+    changeEffectLevelStyle();
+  };
+
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 };
 
 // Масштабирование картинки
 var scaleValue = imgUploadOverlay.querySelector('.scale__control--value').value;
-var numericalScaleValue = parseInt(scaleValue.replace('%', ''), 10);
+var numericalScaleValue = parseInt(scaleValue, 10);
 var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
 var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
 
