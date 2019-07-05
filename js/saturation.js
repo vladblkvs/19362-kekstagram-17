@@ -19,7 +19,7 @@
     effectLevelDepth.style.width = effectLevelPin.style.left;
   };
 
-  window.saturation.onLevelPinUse = function (evt) {
+  window.saturation.onSliderLevelChange = function (evt) {
     evt.preventDefault();
 
     var startCoords = {

@@ -19,7 +19,7 @@
     document.addEventListener('keydown', onPopupEscPress);
     imgUploadOverlay.querySelector('.scale__control--smaller').addEventListener('click', window.scale.onScaleBtnClick);
     imgUploadOverlay.querySelector('.scale__control--bigger').addEventListener('click', window.scale.onScaleBtnClick);
-    imgUploadOverlay.querySelector('.effect-level__pin').addEventListener('mousedown', window.saturation.onLevelPinUse);
+    imgUploadOverlay.querySelector('.effect-level__pin').addEventListener('mousedown', window.saturation.onSliderLevelChange);
     effectLevelBlock.classList.add('hidden');
   };
 
@@ -32,7 +32,7 @@
     document.removeEventListener('keydown', onPopupEscPress);
     imgUploadOverlay.querySelector('.scale__control--smaller').removeEventListener('click', window.scale.onScaleBtnClick);
     imgUploadOverlay.querySelector('.scale__control--bigger').removeEventListener('click', window.scale.onScaleBtnClick);
-    imgUploadOverlay.querySelector('.effect-level__pin').removeEventListener('mousedown', window.saturation.onLevelPinUse);
+    imgUploadOverlay.querySelector('.effect-level__pin').removeEventListener('mousedown', window.saturation.onSliderLevelChange);
   };
 
   var commentField = imgUploadOverlay.querySelector('.text__description');
