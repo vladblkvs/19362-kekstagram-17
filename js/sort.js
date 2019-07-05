@@ -23,36 +23,30 @@ var makeFilterBtnActive = function (btn) {
   }
 };
 
-/* ТАК ТОЖЕ НЕ РАБОТАЛО =(
 var cards = [];
+var onFilterPopularClick = window.debounce(function () {
+  makeFilterBtnActive(filterPopular);
+  updateCards(cards);
+});
 var onFilterNewClick = window.debounce(function () {
   makeFilterBtnActive(filterNew);
   var slicedCards = cards.slice();
   slicedCards = window.utility.shuffleArray(slicedCards);
   updateCards(slicedCards.slice(0, 9));
-}); */
+});
+var onFilterDiscussedClick = window.debounce(function () {
+  makeFilterBtnActive(filterDiscussed);
+  var sortedCards = cards.slice();
+  sortedCards.sort(function (first, second) {
+    return second.comments.length - first.comments.length;
+  });
+  updateCards(sortedCards);
+});
 
 window.sort.activateSortBlock = function (data) {
   imageFilters.classList.remove('img-filters--inactive');
-
-  filterPopular.addEventListener('click', window.debounce(function () {
-    makeFilterBtnActive(filterPopular);
-    updateCards(data);
-  }));
-
-  filterNew.addEventListener('click', window.debounce(function () {
-    makeFilterBtnActive(filterNew);
-    var slicedCards = data.slice();
-    slicedCards = window.utility.shuffleArray(slicedCards);
-    updateCards(slicedCards.slice(0, 9));
-  }));
-
-  filterDiscussed.addEventListener('click', window.debounce(function () {
-    makeFilterBtnActive(filterDiscussed);
-    var sortedCards = data.slice();
-    sortedCards.sort(function (first, second) {
-      return second.comments.length - first.comments.length;
-    });
-    updateCards(sortedCards);
-  }));
+  cards = data;
+  filterPopular.addEventListener('click', onFilterPopularClick);
+  filterNew.addEventListener('click', onFilterNewClick);
+  filterDiscussed.addEventListener('click', onFilterDiscussedClick);
 };
