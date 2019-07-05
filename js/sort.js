@@ -24,29 +24,25 @@ var makeFilterBtnActive = function (btn) {
 };
 
 var cards = [];
-var onFilterPopularClick = window.debounce(function () {
-  makeFilterBtnActive(filterPopular);
-  updateCards(cards);
-});
-var onFilterNewClick = window.debounce(function () {
-  makeFilterBtnActive(filterNew);
+var onFilterBtnClick = window.debounce(function (evt) {
+  makeFilterBtnActive(evt.target);
   var slicedCards = cards.slice();
-  slicedCards = window.utility.shuffleArray(slicedCards);
-  updateCards(slicedCards.slice(0, 9));
-});
-var onFilterDiscussedClick = window.debounce(function () {
-  makeFilterBtnActive(filterDiscussed);
-  var sortedCards = cards.slice();
-  sortedCards.sort(function (first, second) {
-    return second.comments.length - first.comments.length;
-  });
-  updateCards(sortedCards);
+  if (evt.target === filterPopular) {
+    slicedCards = cards.slice(); // Бессмысленная инструкция
+  } else if (evt.target === filterNew) {
+    slicedCards = window.utility.shuffleArray(slicedCards).slice(0, 10);
+  } else if (evt.target === filterDiscussed) {
+    slicedCards.sort(function (first, second) {
+      return second.comments.length - first.comments.length;
+    });
+  }
+  updateCards(slicedCards);
 });
 
 window.sort.activateSortBlock = function (data) {
   imageFilters.classList.remove('img-filters--inactive');
   cards = data;
-  filterPopular.addEventListener('click', onFilterPopularClick);
-  filterNew.addEventListener('click', onFilterNewClick);
-  filterDiscussed.addEventListener('click', onFilterDiscussedClick);
+  filterPopular.addEventListener('click', onFilterBtnClick);
+  filterNew.addEventListener('click', onFilterBtnClick);
+  filterDiscussed.addEventListener('click', onFilterBtnClick);
 };
