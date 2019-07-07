@@ -8,6 +8,7 @@
   var onSuccess = function (data) {
     window.gallery.renderAllCards(data);
     window.sort.activateSortBlock(data);
+    window.picture.activateBigPictureHandler(data);
   };
   window.load(URL, onSuccess, onError);
 })();

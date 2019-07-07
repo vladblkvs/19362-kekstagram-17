@@ -33,6 +33,7 @@
     imgUploadOverlay.querySelector('.scale__control--smaller').removeEventListener('click', window.scale.onScaleBtnClick);
     imgUploadOverlay.querySelector('.scale__control--bigger').removeEventListener('click', window.scale.onScaleBtnClick);
     imgUploadOverlay.querySelector('.effect-level__pin').removeEventListener('mousedown', window.saturation.onSliderLevelChange);
+    imgUploadForm.reset(); // Сброс значения выбора файла
   };
 
   var commentField = imgUploadOverlay.querySelector('.text__description');
@@ -41,7 +42,6 @@
     if (evt.keyCode === window.utility.ESC_KEYCODE && commentField !== document.activeElement) {
       evt.preventDefault();
       closePopup();
-      imgUploadForm.reset(); // Сброс значения выбора файла
     }
   };
 
