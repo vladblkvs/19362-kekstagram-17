@@ -18,10 +18,10 @@
   };
 
   var makeFilterBtnActive = function (btn) {
-    for (var i = 0; i < filterButtons.length; i++) {
-      filterButtons[i].classList.remove('img-filters__button--active');
-      btn.classList.add('img-filters__button--active');
-    }
+    filterButtons.forEach(function (filterButton) {
+      filterButton.classList.remove('img-filters__button--active');
+    });
+    btn.classList.add('img-filters__button--active');
   };
 
   var cards = [];

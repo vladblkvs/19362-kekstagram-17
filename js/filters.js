@@ -56,7 +56,7 @@
     });
   };
 
-  for (var j = 0; j < thumbnails.length; j++) {
-    onThumbnailClick(thumbnails[j], window.filters.effects[thumbnails[j].id]);
-  }
+  thumbnails.forEach(function (thumbnail) {
+    onThumbnailClick(thumbnail, window.filters.effects[thumbnail.id]);
+  });
 })();

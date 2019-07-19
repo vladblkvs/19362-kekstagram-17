@@ -20,12 +20,12 @@
   window.utility.shuffleArray = function (arr) {
     var j;
     var temp;
-    for (var i = arr.length - 1; i > 0; i--) {
-      j = Math.floor(Math.random() * (i + 1));
+    arr.forEach(function (element, index) {
+      j = Math.floor(Math.random() * (index + 1));
       temp = arr[j];
-      arr[j] = arr[i];
-      arr[i] = temp;
-    }
+      arr[j] = element;
+      element = temp;
+    });
     return arr;
   };
 })();
