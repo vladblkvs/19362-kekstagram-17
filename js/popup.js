@@ -15,6 +15,7 @@
 
   // Открытие окна загрузки изображения
   var openPopup = function () {
+    loadFile();
     imgUploadOverlay.classList.remove('hidden');
     window.scale.resetScale();
     uploadPreview.classList.add('effects__preview--none');
@@ -162,11 +163,10 @@
   };
   hashTagField.addEventListener('change', onHashtagInput);
 
-  var fileChooser = document.querySelector('.img-upload__input');
   var preview = document.querySelector('.img-upload__preview img');
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  fileChooser.addEventListener('change', function () {
-    var file = fileChooser.files[0];
+  var loadFile = function () {
+    var file = imgUploadInput.files[0];
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -182,5 +182,5 @@
 
       reader.readAsDataURL(file);
     }
-  });
+  };
 })();
