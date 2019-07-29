@@ -20,7 +20,7 @@
     window.scale.resetScale();
     uploadPreview.classList.add('effects__preview--none');
     imgUploadInput.removeEventListener('change', openPopup);
-    uploadCancel.addEventListener('click', closePopup);
+    uploadCancel.addEventListener('click', window.popup.closePopup);
     document.addEventListener('keydown', onPopupEscPress);
     scaleSmaller.addEventListener('click', window.scale.onScaleBtnClick);
     scaleBigger.addEventListener('click', window.scale.onScaleBtnClick);
@@ -31,11 +31,11 @@
   imgUploadInput.addEventListener('change', openPopup);
 
   // Закрытие окна загрузки изображения
-  var closePopup = function () {
+  window.popup.closePopup = function () {
     imgUploadOverlay.classList.add('hidden');
     window.popup.resetEffectAttributes(uploadPreview, 'effects__preview--none');
     imgUploadInput.addEventListener('change', openPopup);
-    uploadCancel.removeEventListener('click', closePopup);
+    uploadCancel.removeEventListener('click', window.popup.closePopup);
     document.removeEventListener('keydown', onPopupEscPress);
     scaleSmaller.removeEventListener('click', window.scale.onScaleBtnClick);
     scaleBigger.removeEventListener('click', window.scale.onScaleBtnClick);
@@ -49,7 +49,7 @@
   var onPopupEscPress = function (evt) {
     if (evt.keyCode === window.utility.ESC_KEYCODE && commentField !== document.activeElement && hashTagField !== document.activeElement) {
       evt.preventDefault();
-      closePopup();
+      window.popup.closePopup();
     }
   };
 
@@ -173,13 +173,11 @@
       return fileName.endsWith(it);
     });
 
+    var reader = new FileReader();
     if (matches) {
-      var reader = new FileReader();
-
       reader.addEventListener('load', function () {
         preview.src = reader.result;
       });
-
       reader.readAsDataURL(file);
     }
   };

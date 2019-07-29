@@ -25,7 +25,7 @@
   };
 
   var cards = [];
-  var onFilterBtnClick = window.debounce(function (evt) {
+  var onFilterBtnClick = window.utility.debounce(function (evt) {
     makeFilterBtnActive(evt.target);
     var slicedCards = cards.slice();
     if (evt.target === filterNew) {

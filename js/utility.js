@@ -6,16 +6,6 @@
     ESC_KEYCODE: 27
   };
 
-  // Рандомизирует количество комментов от min до max
-  window.utility.getNumberInRange = function (min, max) {
-    return Math.floor(Math.random() * (max + 1 - min) + min);
-  };
-
-  // Рандомизатор массивов, выдаёт случайный элемент
-  window.utility.randomizeArrayValue = function (arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  };
-
   // Перемешивание всего массива
   window.utility.shuffleArray = function (arr) {
     var j;
@@ -27,5 +17,23 @@
       element = temp;
     });
     return arr;
+  };
+
+  // «Устранение дребезга»
+
+  var DEBOUNCE_INTERVAL = 500;
+
+  window.utility.debounce = function (callBack) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        callBack.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
   };
 })();
