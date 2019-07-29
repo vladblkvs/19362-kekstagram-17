@@ -19,8 +19,7 @@
     return arr;
   };
 
-  // «Устранение дребезга»
-
+  // Устранение дребезга
   var DEBOUNCE_INTERVAL = 500;
 
   window.utility.debounce = function (callBack) {

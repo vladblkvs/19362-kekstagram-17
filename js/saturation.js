@@ -14,6 +14,11 @@
     return effectLevelBlock.querySelector('.effect-level__line').offsetWidth;
   };
 
+  var Coordinate = function (x, y) {
+    this.x = x;
+    this.y = y;
+  };
+
   window.saturation.resetPinPosition = function () {
     effectLevelPin.style.left = window.utility.MAX_PERCENT + '%'; // Сброс позиции пина
     effectLevelDepth.style.width = effectLevelPin.style.left;
@@ -22,24 +27,16 @@
   window.saturation.onSliderLevelChange = function (evt) {
     evt.preventDefault();
 
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
+    var startCoords = new Coordinate(evt.clientX, evt.clientY);
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      var shiftRange = {
-        x: startCoords.x - moveEvt.clientX,
-        min: 0,
-        max: getLevelLineLength()
-      };
+      var shiftRange = new Coordinate((startCoords.x - moveEvt.clientX), (startCoords.y - moveEvt.clientY));
+      shiftRange.min = 0;
+      shiftRange.max = getLevelLineLength();
 
       var currentPinPosition = effectLevelPin.offsetLeft - shiftRange.x;
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY);
       if (currentPinPosition >= shiftRange.min && currentPinPosition <= shiftRange.max) {
         effectLevelPin.style.left = currentPinPosition + 'px';
         effectLevelDepth.style.width = effectLevelPin.style.left;

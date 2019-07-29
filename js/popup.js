@@ -3,6 +3,17 @@
 (function () {
   window.popup = {};
 
+  var MAX_HASHTAGS = 5;
+  var MAX_HASHTAG_LENGTH = 20;
+  var HashtagErrorText = {
+    HASHTAG_BEGINNING: 'Хэш-тег должен начинаться с символа # (решётка)',
+    ALONE_HASH_SYMBOL: 'Хэш-тег не может состоять только из одной решётки',
+    SEPARATOR: 'Хэш-теги разделяются пробелами',
+    HASHTAG_REDUPLICATION: 'Один и тот же хэш-тег не может быть использован дважды',
+    HASHTAG_AMOUNT: 'Не более пяти хештегов',
+    HASHTAG_MAX_LENGTH: 'Максимальная длина одного хэш-тега 20 символов'
+  };
+
   var imgUploadForm = document.querySelector('.img-upload__form');
   var imgUploadOverlay = document.querySelector('.img-upload__overlay');
   var uploadPreview = document.querySelector('.img-upload__preview');
@@ -61,21 +72,9 @@
     element.classList.add('img-upload__preview', effect);
   };
 
-  var MAX_HASHTAGS = 5;
-  var MAX_HASHTAG_LENGTH = 20;
-
-  var hashtagErrorText = {
-    HASHTAG_BEGINNING: 'Хэш-тег должен начинаться с символа # (решётка)',
-    ALONE_HASH_SYMBOL: 'Хэш-тег не может состоять только из одной решётки',
-    SEPARATOR: 'Хэш-теги разделяются пробелами',
-    HASHTAG_REDUPLICATION: 'Один и тот же хэш-тег не может быть использован дважды',
-    HASHTAG_AMOUNT: 'Не более пяти хештегов',
-    HASHTAG_MAX_LENGTH: 'Максимальная длина одного хэш-тега 20 символов'
-  };
-
   var checkHashtagAmount = function (arr) {
     if (arr.length > MAX_HASHTAGS) {
-      return hashtagErrorText.HASHTAG_AMOUNT;
+      return HashtagErrorText.HASHTAG_AMOUNT;
     }
     return '';
   };
@@ -84,7 +83,7 @@
     var result = '';
     for (var i = 0; i < arr.length; i++) {
       if (arr[i] === '#') {
-        result = hashtagErrorText.ALONE_HASH_SYMBOL;
+        result = HashtagErrorText.ALONE_HASH_SYMBOL;
         break;
       }
     }
@@ -96,7 +95,7 @@
     for (var i = 0; i < arr.length; i++) {
       for (var j = 0; j < arr[i].length; j++) {
         if ((arr[i][j] === '#') && (!(j === 0))) {
-          result = hashtagErrorText.SEPARATOR;
+          result = HashtagErrorText.SEPARATOR;
           break;
         }
       }
@@ -108,7 +107,7 @@
     var result = '';
     for (var i = 0; i < arr.length; i++) {
       if (arr[i][0] !== '#') {
-        result = hashtagErrorText.HASHTAG_BEGINNING;
+        result = HashtagErrorText.HASHTAG_BEGINNING;
         break;
       }
     }
@@ -119,7 +118,7 @@
     var result = '';
     for (var i = 0; i < arr.length; i++) {
       if (arr[i].length > MAX_HASHTAG_LENGTH) {
-        result = hashtagErrorText.HASHTAG_MAX_LENGTH;
+        result = HashtagErrorText.HASHTAG_MAX_LENGTH;
         break;
       }
     }
@@ -135,7 +134,7 @@
       }
       for (var j = 0; j < arr.length; j++) {
         if ((arr[i].toUpperCase() === arr[j].toUpperCase()) && (i !== j)) {
-          result = hashtagErrorText.HASHTAG_REDUPLICATION;
+          result = HashtagErrorText.HASHTAG_REDUPLICATION;
           flag = true;
           break;
         }

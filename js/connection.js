@@ -3,11 +3,17 @@
 (function () {
   window.connection = {};
 
-  var DOWNLOAD_URL = 'https://js.dump.academy/kekstagram/data';
-  var UPLOAD_URL = 'https://js.dump.academy/kekstagram';
-  var NORMAL_STATUS = 200;
+  var NORMAL_RESPONSE_CODE = 200;
   var TIMEOUT = 10000;
-  var errorText = {
+  var Url = {
+    DOWNLOAD: 'https://js.dump.academy/kekstagram/data',
+    UPLOAD: 'https://js.dump.academy/kekstagram'
+  };
+  var Request = {
+    DOWNLOAD: 'GET',
+    UPLOAD: 'POST'
+  };
+  var ErrorText = {
     RESPONSE_STATUS: 'Cтатус ответа: ',
     CONNECTION_ERROR: 'Произошла ошибка соединения',
     TIMEOUT_TEXT: 'Запрос не успел выполниться за '
@@ -17,19 +23,19 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === NORMAL_STATUS) {
+      if (xhr.status === NORMAL_RESPONSE_CODE) {
         onSuccess(xhr.response);
       } else {
-        onError(errorText.RESPONSE_STATUS + xhr.status + ' ' + xhr.statusText);
+        onError(ErrorText.RESPONSE_STATUS + xhr.status + ' ' + xhr.statusText);
       }
     });
 
     xhr.addEventListener('error', function () {
-      onError(errorText.CONNECTION_ERROR);
+      onError(ErrorText.CONNECTION_ERROR);
     });
 
     xhr.addEventListener('timeout', function () {
-      onError(errorText.TIMEOUT_TEXT + xhr.timeout + 'мс');
+      onError(ErrorText.TIMEOUT_TEXT + xhr.timeout + 'мс');
     });
 
     xhr.timeout = TIMEOUT;
@@ -40,7 +46,7 @@
     var xhr = new XMLHttpRequest();
     createRequest(xhr, onLoadSuccess, onLoadError);
 
-    xhr.open('GET', DOWNLOAD_URL);
+    xhr.open(Request.DOWNLOAD, Url.DOWNLOAD);
     xhr.send();
   };
 
@@ -49,7 +55,7 @@
     var xhr = new XMLHttpRequest();
     createRequest(xhr, onUploadSuccess, onUploadError);
 
-    xhr.open('POST', UPLOAD_URL);
+    xhr.open(Request.UPLOAD, Url.UPLOAD);
     xhr.send(data);
   };
 })();
