@@ -2,7 +2,7 @@
 
 (function () {
   var BASE_COMMENTS = 5;
-  var commentsRenderCount = 0;
+  var additionalCommentsCount = 0;
 
   var pageBody = document.querySelector('body');
   var bigPicture = document.querySelector('.big-picture');
@@ -17,7 +17,7 @@
       onPictureClick(picture, cardsData[index]);
     });
   };
-
+  var cardComments = [];
   var onPictureClick = function (picture, card) {
     picture.addEventListener('click', function (evt) {
       evt.preventDefault();
@@ -32,13 +32,14 @@
       document.addEventListener('keydown', onPopupEscPress);
 
       hideCommentCountBlock();
-
-      var onCommentsLoaderClick = function () {
-        commentsRenderCount += BASE_COMMENTS;
-        showComments(card.comments);
-      };
+      commentsLoader.classList.remove('hidden');
+      cardComments = card.comments;
       commentsLoader.addEventListener('click', onCommentsLoaderClick);
     });
+  };
+
+  var onCommentsLoaderClick = function () {
+    showComments(cardComments);
   };
 
   var hideCommentCountBlock = function () {
@@ -49,11 +50,17 @@
   var commentBlock = document.querySelector('.social__comments');
   var showComments = function (comments) {
     var fragment = document.createDocumentFragment();
-    comments.slice(0, BASE_COMMENTS + commentsRenderCount).forEach(function (comment) {
+    comments.slice(0, BASE_COMMENTS + additionalCommentsCount).forEach(function (comment) {
       fragment.appendChild(renderComment(comment));
     });
     commentBlock.textContent = '';
     commentBlock.appendChild(fragment);
+    additionalCommentsCount += BASE_COMMENTS;
+    if (additionalCommentsCount >= comments.length) {
+      additionalCommentsCount = comments.length;
+      commentsLoader.classList.add('hidden');
+      commentsLoader.removeEventListener('click', onCommentsLoaderClick);
+    }
   };
   var commentsLoader = bigPicture.querySelector('.comments-loader');
 
@@ -71,7 +78,7 @@
     bigPicture.classList.add('hidden');
     bigPictureCancel.removeEventListener('click', closeBigPicture);
     document.removeEventListener('keydown', onPopupEscPress);
-    commentsRenderCount = 0;
+    additionalCommentsCount = 0;
   };
 
   var commentField = document.querySelector('.social__footer-text');
