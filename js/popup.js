@@ -5,6 +5,7 @@
 
   var MAX_HASHTAGS = 5;
   var MAX_HASHTAG_LENGTH = 20;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var HashtagErrorText = {
     HASHTAG_BEGINNING: 'Хэш-тег должен начинаться с символа # (решётка)',
     ALONE_HASH_SYMBOL: 'Хэш-тег не может состоять только из одной решётки',
@@ -144,8 +145,8 @@
     return result;
   };
 
-  var gethashtagsArrMistakes = function (arrHashtags) {
-    var hashtagsArrMistakes = [
+  var getHashtagMistakes = function (arrHashtags) {
+    var hashtagMistakes = [
       checkHashtagAmount(arrHashtags),
       checkAloneHashSymbol(arrHashtags),
       checkSeparator(arrHashtags),
@@ -153,17 +154,16 @@
       checkHashtagMaxLength(arrHashtags),
       checkHashtagReduplication(arrHashtags)
     ];
-    return hashtagsArrMistakes;
+    return hashtagMistakes;
   };
 
   var onHashtagInput = function () {
     var hashTags = hashTagField.value.trim().split(' ');
-    hashTagField.setCustomValidity(gethashtagsArrMistakes(hashTags).join(''));
+    hashTagField.setCustomValidity(getHashtagMistakes(hashTags).join(''));
   };
   hashTagField.addEventListener('change', onHashtagInput);
 
   var preview = document.querySelector('.img-upload__preview img');
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var loadFile = function () {
     var file = imgUploadInput.files[0];
     var fileName = file.name.toLowerCase();

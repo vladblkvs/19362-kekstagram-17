@@ -59,8 +59,8 @@
     window.popup.closePopup();
     main.appendChild(error);
 
-    var onErrorButtonClick = function (radioArr) {
-      radioArr.addEventListener('click', function () {
+    var onErrorButtonClick = function (radioButtons) {
+      radioButtons.addEventListener('click', function () {
         hideResultForm(error, removeErrorEventListeners);
       });
     };
