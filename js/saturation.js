@@ -50,19 +50,19 @@
       var changeEffectLevelStyle = function () {
         switch (true) {
           case uploadPreview.classList.contains('effects__preview--chrome'):
-            uploadPreview.style.filter = window.filters.effects['effect-chrome'].cssStyle + '(' + getEffectLevel(window.filters.effects['effect-chrome']) + ')';
+            uploadPreview.style.filter = window.effects['effect-chrome'].cssStyle + '(' + getEffectLevel(window.effects['effect-chrome']) + ')';
             break;
           case uploadPreview.classList.contains('effects__preview--sepia'):
-            uploadPreview.style.filter = window.filters.effects['effect-sepia'].cssStyle + '(' + getEffectLevel(window.filters.effects['effect-sepia']) + ')';
+            uploadPreview.style.filter = window.effects['effect-sepia'].cssStyle + '(' + getEffectLevel(window.effects['effect-sepia']) + ')';
             break;
           case uploadPreview.classList.contains('effects__preview--marvin'):
-            uploadPreview.style.filter = window.filters.effects['effect-marvin'].cssStyle + '(' + getEffectLevel(window.filters.effects['effect-marvin']) + '%)';
+            uploadPreview.style.filter = window.effects['effect-marvin'].cssStyle + '(' + getEffectLevel(window.effects['effect-marvin']) + '%)';
             break;
           case uploadPreview.classList.contains('effects__preview--phobos'):
-            uploadPreview.style.filter = window.filters.effects['effect-phobos'].cssStyle + '(' + getEffectLevel(window.filters.effects['effect-phobos']) + 'px)';
+            uploadPreview.style.filter = window.effects['effect-phobos'].cssStyle + '(' + getEffectLevel(window.effects['effect-phobos']) + 'px)';
             break;
           case uploadPreview.classList.contains('effects__preview--heat'):
-            uploadPreview.style.filter = window.filters.effects['effect-heat'].cssStyle + '(' + getEffectLevel(window.filters.effects['effect-heat']) + ')';
+            uploadPreview.style.filter = window.effects['effect-heat'].cssStyle + '(' + getEffectLevel(window.effects['effect-heat']) + ')';
             break;
         }
       };

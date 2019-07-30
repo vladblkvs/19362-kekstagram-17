@@ -1,9 +1,7 @@
 'use strict';
 
 (function () {
-  window.filters = {};
-
-  window.filters.effects = {
+  window.effects = {
     'effect-none': {
       class: 'effects__preview--none',
       cssStyle: 'none'
@@ -57,6 +55,6 @@
   };
 
   thumbnails.forEach(function (thumbnail) {
-    onThumbnailClick(thumbnail, window.filters.effects[thumbnail.id]);
+    onThumbnailClick(thumbnail, window.effects[thumbnail.id]);
   });
 })();
