@@ -52,14 +52,12 @@
     imgUploadForm.reset(); // Сброс значения выбора файла
   };
 
-  var loadFile = function () {
-    var file = imgUploadInput.files[0];
+  var loadFile = function (fileSource) {
+    var file = fileSource;
     var fileName = file.name.toLowerCase();
-
     var matches = FILE_TYPES.some(function (it) {
       return fileName.endsWith(it);
     });
-
     var reader = new FileReader();
     if (matches) {
       reader.addEventListener('load', function () {
@@ -69,8 +67,30 @@
     }
   };
 
+  // Drag-n-Drop файла для загрузки
+  imgUploadForm.ondragover = function (evt) {
+    evt.preventDefault();
+  };
+
+  imgUploadForm.ondragenter = function (evt) {
+    evt.preventDefault();
+    this.style = 'background-image: none;';
+  };
+
+  imgUploadForm.ondragleave = function (evt) {
+    evt.preventDefault();
+    this.removeAttribute('style');
+  };
+
+  imgUploadForm.ondrop = function (evt) {
+    evt.preventDefault();
+    this.removeAttribute('style');
+    loadFile(evt.dataTransfer.files[0]);
+    openPopup();
+  };
+
   var onUploadInputPress = function () {
-    loadFile();
+    loadFile(imgUploadInput.files[0]);
     openPopup();
   };
   imgUploadInput.addEventListener('change', onUploadInputPress);
