@@ -26,15 +26,14 @@
       bigPicture.querySelector('img').src = card.url;
       likesCount.textContent = card.likes;
       description.textContent = card.description;
-      showComments(card.comments);
 
       bigPictureCancel.addEventListener('click', closeBigPicture);
       document.addEventListener('keydown', onPopupEscPress);
 
-      hideCommentCountBlock();
       commentsLoader.classList.remove('hidden');
       cardComments = card.comments;
       commentsLoader.addEventListener('click', onCommentsLoaderClick);
+      showComments(card.comments);
     });
   };
 
@@ -42,9 +41,14 @@
     showComments(cardComments);
   };
 
-  var hideCommentCountBlock = function () {
+  var changeCommentCountIndication = function (loadedComments, totalComments) {
     var commentCount = bigPicture.querySelector('.social__comment-count');
-    commentCount.classList.add('visually-hidden');
+    commentCount.style = 'color: #818181';
+    if (loadedComments === totalComments || totalComments <= BASE_COMMENTS) {
+      commentCount.textContent = 'Показаны все комментарии: ' + totalComments;
+    } else {
+      commentCount.textContent = 'Показано комментариев: ' + loadedComments + ' из ' + totalComments;
+    }
   };
 
   var commentBlock = document.querySelector('.social__comments');
@@ -60,7 +64,11 @@
       additionalCommentsCount = comments.length;
       commentsLoader.classList.add('hidden');
       commentsLoader.removeEventListener('click', onCommentsLoaderClick);
+    } else if (comments.length <= BASE_COMMENTS) {
+      commentsLoader.classList.add('hidden');
+      commentsLoader.removeEventListener('click', onCommentsLoaderClick);
     }
+    changeCommentCountIndication(additionalCommentsCount, comments.length);
   };
   var commentsLoader = bigPicture.querySelector('.comments-loader');
 
