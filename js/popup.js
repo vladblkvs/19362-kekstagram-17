@@ -24,10 +24,9 @@
   var effectLevelPin = imgUploadOverlay.querySelector('.effect-level__pin');
   var scaleSmaller = imgUploadOverlay.querySelector('.scale__control--smaller');
   var scaleBigger = imgUploadOverlay.querySelector('.scale__control--bigger');
+  var preview = document.querySelector('.img-upload__preview img');
 
-  // Открытие окна загрузки изображения
   var openPopup = function () {
-    loadFile();
     imgUploadOverlay.classList.remove('hidden');
     window.scale.resetScale();
     uploadPreview.classList.add('effects__preview--none');
@@ -39,8 +38,6 @@
     effectLevelPin.addEventListener('mousedown', window.saturation.onSliderLevelChange);
     effectLevelBlock.classList.add('hidden');
   };
-
-  imgUploadInput.addEventListener('change', openPopup);
 
   // Закрытие окна загрузки изображения
   window.popup.closePopup = function () {
@@ -54,6 +51,29 @@
     effectLevelPin.removeEventListener('mousedown', window.saturation.onSliderLevelChange);
     imgUploadForm.reset(); // Сброс значения выбора файла
   };
+
+  var loadFile = function () {
+    var file = imgUploadInput.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    var reader = new FileReader();
+    if (matches) {
+      reader.addEventListener('load', function () {
+        preview.src = reader.result;
+      });
+      reader.readAsDataURL(file);
+    }
+  };
+
+  var onUploadInputPress = function () {
+    loadFile();
+    openPopup();
+  };
+  imgUploadInput.addEventListener('change', onUploadInputPress);
 
   var commentField = imgUploadOverlay.querySelector('.text__description');
   var hashTagField = imgUploadOverlay.querySelector('.text__hashtags');
@@ -161,22 +181,4 @@
     hashTagField.setCustomValidity(getHashtagMistakes(hashTags).join(' '));
   };
   hashTagField.addEventListener('change', onHashtagInput);
-
-  var preview = document.querySelector('.img-upload__preview img');
-  var loadFile = function () {
-    var file = imgUploadInput.files[0];
-    var fileName = file.name.toLowerCase();
-
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    var reader = new FileReader();
-    if (matches) {
-      reader.addEventListener('load', function () {
-        preview.src = reader.result;
-      });
-      reader.readAsDataURL(file);
-    }
-  };
 })();
