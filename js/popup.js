@@ -31,6 +31,7 @@
     window.scale.resetScale();
     uploadPreview.classList.add('effects__preview--none');
     imgUploadInput.removeEventListener('change', openPopup);
+    imgUploadOverlay.addEventListener('click', window.popup.closePopup);
     uploadCancel.addEventListener('click', window.popup.closePopup);
     document.addEventListener('keydown', onPopupEscPress);
     scaleSmaller.addEventListener('click', window.scale.onScaleBtnClick);
@@ -44,6 +45,7 @@
     imgUploadOverlay.classList.add('hidden');
     window.popup.resetEffectAttributes(uploadPreview, 'effects__preview--none');
     imgUploadInput.addEventListener('change', openPopup);
+    imgUploadOverlay.removeEventListener('click', window.popup.closePopup);
     uploadCancel.removeEventListener('click', window.popup.closePopup);
     document.removeEventListener('keydown', onPopupEscPress);
     scaleSmaller.removeEventListener('click', window.scale.onScaleBtnClick);
