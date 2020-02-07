@@ -28,7 +28,6 @@
       description.textContent = card.description;
 
       bigPictureCancel.addEventListener('click', closeBigPicture);
-      bigPicture.addEventListener('click', closeBigPicture);
       document.addEventListener('keydown', onPopupEscPress);
 
       commentsLoader.classList.remove('hidden');
@@ -86,7 +85,6 @@
     pageBody.removeAttribute('class');
     bigPicture.classList.add('hidden');
     bigPictureCancel.removeEventListener('click', closeBigPicture);
-    bigPicture.removeEventListener('click', closeBigPicture);
     document.removeEventListener('keydown', onPopupEscPress);
     additionalCommentsCount = 0;
   };
