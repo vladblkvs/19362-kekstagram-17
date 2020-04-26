@@ -6,7 +6,7 @@
   var NORMAL_RESPONSE_CODE = 200;
   var TIMEOUT = 10000;
   var Url = {
-    DOWNLOAD: 'https://my-json-server.typicode.com/vladblkvs/19362-kekstagram-17',
+    DOWNLOAD: 'https://api.jsonbin.io/b/5ea591d698b3d5375234d447',
     UPLOAD: 'https://js.dump.academy/kekstagram'
   };
   var Request = {
@@ -46,7 +46,8 @@
     var xhr = new XMLHttpRequest();
     createRequest(xhr, onLoadSuccess, onLoadError);
 
-    xhr.open(Request.DOWNLOAD, Url.DOWNLOAD);
+    xhr.open(Request.DOWNLOAD, Url.DOWNLOAD, true);
+    xhr.setRequestHeader('secret-key', '$2b$10$PS0nZIm.5ROxD8Ej721Gv.da8Rf3ipG8fbYuGvHEvcadpEp03XYHC');
     xhr.send();
   };
 
