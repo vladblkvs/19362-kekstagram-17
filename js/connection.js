@@ -6,7 +6,7 @@
   var NORMAL_RESPONSE_CODE = 200;
   var TIMEOUT = 10000;
   var Url = {
-    DOWNLOAD: 'https://javascript.pages.academy/kekstagram/data',
+    DOWNLOAD: 'https://my-json-server.typicode.com/vladblkvs/19362-kekstagram-17',
     UPLOAD: 'https://js.dump.academy/kekstagram'
   };
   var Request = {
