@@ -3,31 +3,31 @@
 (function () {
   window.sort = {};
 
-  var imageFilters = document.querySelector('.img-filters');
-  var filterButtons = imageFilters.querySelectorAll('.img-filters__button');
-  var filterPopular = imageFilters.querySelector('#filter-popular');
-  var filterNew = imageFilters.querySelector('#filter-new');
-  var filterDiscussed = imageFilters.querySelector('#filter-discussed');
+  let imageFilters = document.querySelector(`.img-filters`);
+  let filterButtons = imageFilters.querySelectorAll(`.img-filters__button`);
+  let filterPopular = imageFilters.querySelector(`#filter-popular`);
+  let filterNew = imageFilters.querySelector(`#filter-new`);
+  let filterDiscussed = imageFilters.querySelector(`#filter-discussed`);
 
-  var updateCards = function (currentCards) {
-    var pictures = document.querySelectorAll('.picture');
+  let updateCards = function (currentCards) {
+    let pictures = document.querySelectorAll(`.picture`);
     pictures.forEach(function (picture) {
       picture.remove();
     });
     window.gallery.renderAllCards(currentCards);
   };
 
-  var makeFilterBtnActive = function (btn) {
+  let makeFilterBtnActive = function (btn) {
     filterButtons.forEach(function (filterButton) {
-      filterButton.classList.remove('img-filters__button--active');
+      filterButton.classList.remove(`img-filters__button--active`);
     });
-    btn.classList.add('img-filters__button--active');
+    btn.classList.add(`img-filters__button--active`);
   };
 
-  var cards = [];
-  var onFilterBtnClick = window.utility.debounce(function (evt) {
+  let cards = [];
+  let onFilterBtnClick = window.utility.debounce(function (evt) {
     makeFilterBtnActive(evt.target);
-    var slicedCards = cards.slice();
+    let slicedCards = cards.slice();
     if (evt.target === filterNew) {
       slicedCards = window.utility.shuffleArray(slicedCards).slice(0, 10);
     } else if (evt.target === filterDiscussed) {
@@ -40,10 +40,10 @@
   });
 
   window.sort.activateSortBlock = function (data) {
-    imageFilters.classList.remove('img-filters--inactive');
+    imageFilters.classList.remove(`img-filters--inactive`);
     cards = data;
-    filterPopular.addEventListener('click', onFilterBtnClick);
-    filterNew.addEventListener('click', onFilterBtnClick);
-    filterDiscussed.addEventListener('click', onFilterBtnClick);
+    filterPopular.addEventListener(`click`, onFilterBtnClick);
+    filterNew.addEventListener(`click`, onFilterBtnClick);
+    filterDiscussed.addEventListener(`click`, onFilterBtnClick);
   };
 })();

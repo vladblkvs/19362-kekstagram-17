@@ -8,8 +8,8 @@
 
   // Перемешивание всего массива
   window.utility.shuffleArray = function (arr) {
-    var j;
-    var temp;
+    let j;
+    let temp;
     arr.forEach(function (element, index) {
       j = Math.floor(Math.random() * (index + 1));
       temp = arr[j];
@@ -20,18 +20,17 @@
   };
 
   // Устранение дребезга
-  var DEBOUNCE_INTERVAL = 500;
+  const DEBOUNCE_INTERVAL = 250;
 
   window.utility.debounce = function (callBack) {
-    var lastTimeout = null;
+    let lastTimeout = null;
 
-    return function () {
-      var parameters = arguments;
+    return function (...args) {
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }
       lastTimeout = window.setTimeout(function () {
-        callBack.apply(null, parameters);
+        callBack(...args);
       }, DEBOUNCE_INTERVAL);
     };
   };
