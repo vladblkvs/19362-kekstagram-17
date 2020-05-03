@@ -1,10 +1,9 @@
 'use strict';
 
 (function () {
-  window.saturation = {};
+  window.slider = {};
 
   let imgUploadOverlay = document.querySelector(`.img-upload__overlay`);
-  let uploadPreview = document.querySelector(`.img-upload__preview`);
   let effectLevelBlock = imgUploadOverlay.querySelector(`.effect-level`);
   let effectLevelPin = imgUploadOverlay.querySelector(`.effect-level__pin`);
   let effectLevelDepth = imgUploadOverlay.querySelector(`.effect-level__depth`);
@@ -21,12 +20,7 @@
     }
   }
 
-  window.saturation.resetPinPosition = function () {
-    effectLevelPin.style.left = `${window.utility.MAX_PERCENT}%`; // Сброс позиции пина
-    effectLevelDepth.style.width = effectLevelPin.style.left;
-  };
-
-  window.saturation.onSliderLevelChange = function (evt) {
+  window.slider.onSlide = function (evt) {
     evt.preventDefault();
 
     let startCoords = new Coordinate(evt.clientX, evt.clientY);
@@ -49,26 +43,7 @@
         return effectLevelValue / window.utility.MAX_PERCENT * (effectRange.max - effectRange.min) + effectRange.min;
       };
 
-      let changeEffectLevelStyle = function () {
-        switch (true) {
-          case uploadPreview.classList.contains(`effects__preview--chrome`):
-            uploadPreview.style.filter = `${window.effects[`effect-chrome`].cssStyle}(${getEffectLevel(window.effects[`effect-chrome`])})`;
-            break;
-          case uploadPreview.classList.contains(`effects__preview--sepia`):
-            uploadPreview.style.filter = `${window.effects[`effect-sepia`].cssStyle}(${getEffectLevel(window.effects[`effect-sepia`])})`;
-            break;
-          case uploadPreview.classList.contains(`effects__preview--marvin`):
-            uploadPreview.style.filter = `${window.effects[`effect-marvin`].cssStyle}(${getEffectLevel(window.effects[`effect-marvin`])}%)`;
-            break;
-          case uploadPreview.classList.contains(`effects__preview--phobos`):
-            uploadPreview.style.filter = `${window.effects[`effect-phobos`].cssStyle}(${getEffectLevel(window.effects[`effect-phobos`])}px)`;
-            break;
-          case uploadPreview.classList.contains(`effects__preview--heat`):
-            uploadPreview.style.filter = `${window.effects[`effect-heat`].cssStyle}(${getEffectLevel(window.effects[`effect-heat`])})`;
-            break;
-        }
-      };
-      changeEffectLevelStyle();
+      window.effects.changeLevel(getEffectLevel);
     };
 
     let onMouseUp = function () {

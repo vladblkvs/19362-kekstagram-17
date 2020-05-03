@@ -25,6 +25,7 @@
   let scaleSmaller = imgUploadOverlay.querySelector(`.scale__control--smaller`);
   let scaleBigger = imgUploadOverlay.querySelector(`.scale__control--bigger`);
   let preview = document.querySelector(`.img-upload__preview img`);
+  let thumbnails = document.querySelector(`.effects__list`);
 
   let openPopup = function () {
     imgUploadOverlay.classList.remove(`hidden`);
@@ -35,7 +36,8 @@
     document.addEventListener(`keydown`, onPopupEscPress);
     scaleSmaller.addEventListener(`click`, window.scale.onScaleBtnClick);
     scaleBigger.addEventListener(`click`, window.scale.onScaleBtnClick);
-    effectLevelPin.addEventListener(`mousedown`, window.saturation.onSliderLevelChange);
+    effectLevelPin.addEventListener(`mousedown`, window.slider.onSlide);
+    thumbnails.addEventListener(`click`, window.effects.onThumbnailClick);
     effectLevelBlock.classList.add(`hidden`);
   };
 
@@ -48,7 +50,8 @@
     document.removeEventListener(`keydown`, onPopupEscPress);
     scaleSmaller.removeEventListener(`click`, window.scale.onScaleBtnClick);
     scaleBigger.removeEventListener(`click`, window.scale.onScaleBtnClick);
-    effectLevelPin.removeEventListener(`mousedown`, window.saturation.onSliderLevelChange);
+    effectLevelPin.removeEventListener(`mousedown`, window.slider.onSlide);
+    thumbnails.removeEventListener(`click`, window.effects.onThumbnailClick);
     imgUploadForm.reset(); // Сброс значения выбора файла
   };
 
